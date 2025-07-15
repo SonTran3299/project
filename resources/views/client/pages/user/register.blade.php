@@ -5,13 +5,17 @@
         <h3>Đăng ký</h3>
     </div>
     <div class="card-body">
-        <form action="" method="post">
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
             <div class="form-group row">
-                <label for="username" class="col-md-4 col-form-label text-md-right">
-                    Tên tài khoản:
+                <label for="name" class="col-md-4 col-form-label text-md-right">
+                    Tên người dùng:
                 </label>
                 <div class="col-md-6">
-                    <input type="text" id="username" class="form-control" name="username">
+                    <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}">
+                    @error('name')
+                        <div class="mt-2 alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
@@ -20,11 +24,14 @@
                     Email:
                 </label>
                 <div class="col-md-6">
-                    <input type="text" id="email" class="form-control" name="email">
+                    <input type="text" id="email" class="form-control" name="email" value="{{ old('email') }}">
+                    @error('email')
+                        <div class="mt-2 alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
-            <div class="form-group row">
+            {{-- <div class="form-group row">
                 <label for="phone_number" class="col-md-4 col-form-label text-md-right">
                     Số điện thoại:
                 </label>
@@ -40,7 +47,7 @@
                 <div class="col-md-6">
                     <input type="text" id="address" class="form-control">
                 </div>
-            </div>
+            </div> --}}
 
             <div class="form-group row">
                 <label for="password" class="col-md-4 col-form-label text-md-right">
@@ -48,20 +55,24 @@
                 </label>
                 <div class="col-md-6">
                     <input type="password" id="password" class="form-control" name="password">
+                    @error('password')
+                        <div class="mt-2 alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="repeat_password" class="col-md-4 col-form-label text-md-right">
+                <label for="password_confirmation" class="col-md-4 col-form-label text-md-right">
                     Nhập lại mật khẩu:
                 </label>
                 <div class="col-md-6">
-                    <input type="password" id="repeat_password" class="form-control" name="repeat_password">
+                    <input type="password" id="password_confirmation" class="form-control" name="password_confirmation">
+
                 </div>
             </div>
-
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             <div class="col-md-6 offset-md-4">
-                <button type="submit" class="btn btn-primary" name="user_register">
+                <button type="submit" class="btn btn-primary" name="register">
                     Đăng ký
                 </button>
             </div>

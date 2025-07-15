@@ -1,0 +1,20 @@
+<div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
+    {{-- <div class="nav-item dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i
+                class="fa fa-angle-down float-right mt-1"></i></a>
+        <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
+            <a href="" class="dropdown-item">Men's Dresses</a>
+            <a href="" class="dropdown-item">Women's Dresses</a>
+            <a href="" class="dropdown-item">Baby's Dresses</a>
+        </div>
+    </div> --}}
+    @if (isset($dataCategory) && $dataCategory->count() > 0)
+        @foreach ($dataCategory as $category)
+            <a href="" class="nav-item nav-link">
+                {{ Str::title($category->name) }}
+            </a>
+        @endforeach
+    @else
+        <p class="text-muted p-3">Chưa có danh mục nào.</p>
+    @endif
+</div>

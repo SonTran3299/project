@@ -2,6 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\ProductImage;
+use App\Models\Shipper;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,11 +19,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        //ProductCategory::factory(5)->create();
+        $categories = [
+            'truyện tranh',
+            'truyện chữ',
+            "tiểu thuyết",
+            'sách văn học',
+            'truyện trinh thám',
+            'sách tham khảo'
+        ];
+        foreach ($categories as $categoryName) {
+            ProductCategory::factory()->withNameAndSlug($categoryName)->create();
+        }
+        User::factory(5)->create();
+        Shipper::factory(5)->create();
+        Product::factory(10)->create();
+        ProductImage::factory(5)->create();
+        Cart::factory(10)->create();
+        Order::factory(5)->create();
     }
 }

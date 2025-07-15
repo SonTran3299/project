@@ -24,7 +24,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('client.pages.home') }}">Trang chủ</a>
+            <a class="navbar-brand" href="">Trang chủ</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -33,10 +33,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('client.pages.user.login') }}">Đăng nhập</a>
+                        <a class="nav-link" href="">Đăng nhập</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('client.pages.user.register') }}">Đăng ký</a>
+                        <a class="nav-link" href="">Đăng ký</a>
                     </li>
                 </ul>
             </div>

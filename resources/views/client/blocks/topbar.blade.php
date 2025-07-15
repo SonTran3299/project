@@ -37,13 +37,14 @@
             </a>
         </div>
         <div class="col-lg-6 col-6 text-left">
-            <form action="">
+            <form action="{{ route('client.shop') }}" method="get">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for products">
+                    <input type="text" class="form-control" name="query"
+                        value="{{ request()->get('query') ?? '' }}" placeholder="Tìm kiếm sản phẩm">
                     <div class="input-group-append">
-                        <span class="input-group-text bg-transparent text-primary">
+                        <button type="submit" class="input-group-text bg-transparent text-primary">
                             <i class="fa fa-search"></i>
-                        </span>
+                        </button>
                     </div>
                 </div>
             </form>
@@ -53,7 +54,7 @@
                 <i class="fas fa-heart text-primary"></i>
                 <span class="badge">0</span>
             </a>
-            <a href="" class="btn border">
+            <a href="{{ route('client.cart') }}" class="btn border">
                 <i class="fas fa-shopping-cart text-primary"></i>
                 <span class="badge">0</span>
             </a>

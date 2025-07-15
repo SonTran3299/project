@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         User::factory(5)->create();
         Shipper::factory(5)->create();
         Product::factory(10)->create();
-        ProductImage::factory(5)->create();
+        //ProductImage::factory(5)->create();
         Cart::factory(10)->create();
         Order::factory(5)->create();
     }

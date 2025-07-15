@@ -43,8 +43,31 @@
                     {{-- -------------------- --}}
 
                     <div class="navbar-nav ml-auto py-0">
-                        <a href="" class="nav-item nav-link">Đăng nhập</a>
-                        <a href="" class="nav-item nav-link">Đăng ký</a>
+                        @auth
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown">{{ Auth::user()->name }}</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="{{ route('dashboard') }}" class="dropdown-item">
+                                        Dashboard
+                                    </a>
+                                    <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                                        Profile
+                                    </a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button class="dropdown-item" href="{{ route('logout') }}"
+                                            onclick="event.preventDefault();
+                                 this.closest('form').submit();">
+                                            {{ __('Log Out') }}
+                                    </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @else
+                            <a href="" class="nav-item nav-link">Đăng nhập</a>
+                            <a href="" class="nav-item nav-link">Đăng ký</a>
+                        @endauth
                     </div>
                 </div>
             </nav>

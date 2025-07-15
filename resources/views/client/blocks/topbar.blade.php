@@ -37,7 +37,7 @@
             </a>
         </div>
         <div class="col-lg-6 col-6 text-left">
-            <form action="{{ route('client.shop') }}" method="get">
+            <form action="{{ route('client.shop') }}" method="get" id="search-form">
                 <div class="input-group">
                     <input type="text" class="form-control" name="query"
                         value="{{ request()->get('query') ?? '' }}" placeholder="Tìm kiếm sản phẩm">

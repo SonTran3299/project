@@ -19,8 +19,13 @@ class ProductImageFactory extends Factory
     {
         $datas = Product::all();
         $productIds = $datas->pluck('id')->toArray();
+
+        $imageUrl = "https://picsum.photos/640/480?random=".rand();
+        $imageName = "image_".uniqid();
+        file_put_contents(public_path('images/product/product_image/'.$imageName.'.jpg'),file_get_contents($imageUrl));
+
         return [
-            'image' => fake()->imageUrl(640, 480, 'animals', true),
+            'image' => $imageName.'.jpg',
             'product_id' => fake()->randomElement($productIds),
             'created_at' => now(),
             'updated_at' => now()

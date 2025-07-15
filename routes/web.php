@@ -20,4 +20,3 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 require_once(__DIR__.'/client_web.php');
 require_once(__DIR__.'/admin_web.php');
-

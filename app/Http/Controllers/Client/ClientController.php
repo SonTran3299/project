@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function loadCategory()
     {
-        $dataProduct = Product::orderBy('id',  'desc')->take(8)->get();
-        return view('client.pages.home', ['dataProduct' => $dataProduct,'dataCategory' => $this->loadCategory()]);
+        return DB::table('product_category')->orderBy('name', 'asc')->get();
     }
 
     public function shop(Request $request)
@@ -23,21 +22,21 @@ class ClientController extends Controller
         $sort  = $request->sort ?? 'latest';
         $arraySort = ['id', 'desc'];
 
-        $minPrice = 0;
-        $maxPrice = 100;
-        //SELECT *  FROM `product` WHERE `price` BETWEEN 8 AND 100000000;
+        $maxPrice = $request->query('max_price') ?? Product::max('price');
+        $minPrice = $request->query('min_price') ?? 0;
+
         if ($sort === 'oldest') {
             $arraySort = ['id', 'asc'];
         }
 
         [$column, $sort] = $arraySort;
 
-        // $itemPerPage = config('my-config.item_per_page');
-        $itemPerPage = 9;
+        $itemPerPage = config('my-config.client_product_per_page');
+
         if (!$searchQuery) {
-            $dataProduct = Product::orderBy($column,  $sort)->paginate($itemPerPage);
+            $dataProduct = Product::orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
         } else {
-            $dataProduct = Product::where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->paginate($itemPerPage);
+            $dataProduct = Product::where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
         }
 
         return view('client.pages.shop', ['dataProduct' => $dataProduct, 'dataCategory' => $this->loadCategory()]);
@@ -53,18 +52,13 @@ class ClientController extends Controller
         return view('client.pages.contact', ['dataCategory' => $this->loadCategory()]);
     }
 
-    public function loadCategory()
-    {
-        return DB::table('product_category')->orderBy('name', 'asc')->get();
-    }
+    // public function login()
+    // {
+    //     return view('client.pages.user.login');
+    // }
 
-    public function login()
-    {
-        return view('client.pages.user.login');
-    }
-
-    public function register()
-    {
-        return view('client.pages.user.register');
-    }
+    // public function register()
+    // {
+    //     return view('client.pages.user.register');
+    // }
 }

@@ -28,19 +28,16 @@
                 <!-- Price Start -->
                 <div class="border-bottom mb-4 pb-4">
 
-                    <form action="{{ route('client.shop') }}" method="GET">
-                        {{-- <h5 class="font-weight-semi-bold mb-4">Lọc theo tên sản phẩm</h5>
-                        <div class="form-row mb-4">
-                            <input type="text" class="form-control" id="query" name="query"
-                                    placeholder="Tìm tên sản phẩm" value="{{ request()->get('query') ?? '' }}">
-                        </div> --}}
+                    <form action="{{ route('client.shop') }}" method="GET" id="price-filter-form">
                         <h5 class="font-weight-semi-bold mb-4">Lọc theo giá</h5>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <input type="text" class="form-control" id="minPrice" placeholder="Tối thiểu">
+                                <input type="number" class="form-control" id="minPrice" name="min_price"
+                                    placeholder="Tối thiểu" value="{{ request()->get('min_price') ?? '' }}">
                             </div>
                             <div class="form-group col-md-6">
-                                <input type="text" class="form-control" id="maxPrice" placeholder="Tối đa">
+                                <input type="number" class="form-control" id="maxPrice" name="max_price"
+                                    placeholder="Tối đa" value="{{ request()->get('max_price') ?? '' }}">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success w-100 mt-1">Áp dụng</button>
@@ -56,23 +53,8 @@
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <div>
-                            {{-- <form action="{{ route('client.shop') }}" method="GET" id="searchSortForm"
-                                class="d-flex align-items-center justify-content-between mb-4"> --}}
-                            <form action="{{ route('client.shop') }}" method="GET" id="searchSortForm"
-                                class="d-flex align-items-center justify-content-end mb-4">
-
-                                {{-- <div>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="query" name="query"
-                                            placeholder="Tìm tên sản phẩm" value="{{ request()->get('query') ?? '' }}">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="input-group-text bg-transparent text-primary">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> --}}
-
+                            <form action="{{ route('client.shop') }}" method="GET" id="sort-form"
+                                class="d-flex align-items-center justify-content-end mb-4 ">
                                 <div class="ml-4">
                                     <select class="form-control mr-sm-2" name="sort" id="sort">
                                         <option {{ in_array(request()->get('sort'), ['latest', '']) ? 'selected' : '' }}
@@ -96,23 +78,35 @@
                             <div class="card product-item border-0 mb-4">
                                 <div
                                     class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                                    <img class="img-fluid w-100" src="{{ asset("images/$data->main_image") }}"
+                                    <img class="img-fluid w-100" src="{{ asset("images/product/main_image/$data->main_image") }}"
                                         alt="{{ $data->name }}">
+                                    @if ($data->discount_percentage > 0)
+                                        <span class="badge badge-danger position-absolute mt-2 mr-2"
+                                            style="top: 0; right: 0; z-index: 10;">
+                                            {{ round($data->discount_percentage * 100) }}%
+                                        </span>
+                                    @endif
                                 </div>
                                 <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                     <h6 class="text-truncate mb-3">{{ $data->name }}</h6>
                                     <div class="d-flex justify-content-center">
-                                        <h6>{{ Number::currency($data->price) }}</h6>
-                                        {{-- <h6>{{$data->price*(1 - $data->discount_percentage)}}</h6> --}}
+                                        @php
+                                            $reducePrice = $data->price * (1 - $data->discount_percentage);
+                                        @endphp
+                                        <h6>{{ Number::currency($reducePrice) }}</h6>
                                         <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
                                     </div>
                                 </div>
                                 <div class="card-footer d-flex justify-content-between bg-light border">
                                     <a href="{{ route('client.detail', ['product' => $data->id]) }}"
-                                        class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>Chi
-                                        tiết</a>
-                                    <a href="" class="btn btn-sm text-dark p-0"><i
-                                            class="fas fa-shopping-cart text-primary mr-1"></i>Thêm vào giỏ</a>
+                                        class="btn btn-sm text-dark p-0">
+                                        <i class="fas fa-eye text-primary mr-1"></i>
+                                        Chi tiết
+                                    </a>
+                                    <button class="btn btn-sm text-dark p-0">
+                                        <i class="fas fa-shopping-cart text-primary mr-1"></i>
+                                        Thêm vào giỏ
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -134,12 +128,77 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sortSelect = document.getElementById('sort');
-            const searchSortForm = document.getElementById('searchSortForm');
+            const filterForm = document.getElementById('price-filter-form');
+            const searchForm = document.getElementById('search-form');
 
-            if (sortSelect && searchSortForm) {
+            function submitAllFilters(source) {
+                const params = new URLSearchParams(window.location.search);
+
+                if (sortSelect) {
+                    params.set('sort', sortSelect.value);
+                }
+
+                if (searchForm) {
+                    const query = searchForm.querySelector('input[name="query"]')?.value;
+                    if (query) {
+                        params.set('query', query);
+                    } else {
+                        params.delete('query');
+                    }
+                }
+
+                if (source === 'search') {
+                    params.delete('min_price');
+                    params.delete('max_price');
+                } else if (filterForm) {
+                    const minPrice = filterForm.querySelector('#minPrice')?.value;
+                    const maxPrice = filterForm.querySelector('#maxPrice')?.value;
+
+                    if (minPrice) {
+                        params.set('min_price', minPrice);
+                    } else {
+                        params.delete('min_price');
+                    }
+                    if (maxPrice) {
+                        params.set('max_price', maxPrice);
+                    } else {
+                        params.delete('max_price');
+                    }
+                }
+
+                window.location.href = "{{ route('client.shop') }}?" + params.toString();
+            }
+
+            if (sortSelect) {
                 sortSelect.addEventListener('change', function() {
-                    searchSortForm.submit(); // Gửi form khi giá trị của select thay đổi
+                    submitAllFilters('sort');
                 });
+            }
+
+            if (filterForm) {
+                filterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitAllFilters('filter');
+                });
+            }
+
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitAllFilters('search');
+                });
+
+                // Nhấn enter gửi form
+                const searchInput = searchForm.querySelector('input[name="query"]');
+                if (searchInput) {
+                    // Dùng 'keyup' thay vì 'up'
+                    searchInput.addEventListener('keyup', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            submitAllFilters('search');
+                        }
+                    });
+                }
             }
         });
     </script>

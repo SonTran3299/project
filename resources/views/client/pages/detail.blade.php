@@ -7,30 +7,14 @@
     </nav>
 @endsection
 
-@section('navbar')
-    <div class="navbar-nav mr-auto py-0">
-        <a href="index.html" class="nav-item nav-link">Home</a>
-        <a href="shop.html" class="nav-item nav-link">Shop</a>
-        <a href="detail.html" class="nav-item nav-link active">Shop Detail</a>
-        <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-            <div class="dropdown-menu rounded-0 m-0">
-                <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                <a href="checkout.html" class="dropdown-item">Checkout</a>
-            </div>
-        </div>
-        <a href="contact.html" class="nav-item nav-link">Contact</a>
-    </div>
-@endsection
-
 @section('page-header')
     <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Shop Detail</h1>
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Chi tiết sản phẩm</h1>
             <div class="d-inline-flex">
                 <p class="m-0"><a href="">Home</a></p>
                 <p class="m-0 px-2">-</p>
-                <p class="m-0">Shop Detail</p>
+                <p class="m-0">Chi tiết sản phẩm</p>
             </div>
         </div>
     </div>
@@ -77,10 +61,18 @@
                     </div>
                     <small class="pt-1">(50 Reviews)</small>
                 </div>
-                <h3 class="font-weight-semi-bold mb-4">{{ $data->price }}</h3>
+                <div class="mb-4">
+                    @php
+                        $reducePrice = $data->price * (1 - $data->discount_percentage);
+                    @endphp
+                    <span class="h3 text-danger font-weight-bold mr-2">{{ Number::currency($reducePrice) }}</span>
+                    <span class="font-weight-semi-bold"><del>{{ Number::currency($data->price) }}</del></span>
+                </div>
+
                 <p class="mb-4">{!! $data->description !!}
                 </p>
-                <div class="d-flex mb-3">
+                {{-- size --}}
+                {{-- <div class="d-flex mb-3">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
                     <form>
                         <div class="custom-control custom-radio custom-control-inline">
@@ -104,8 +96,9 @@
                             <label class="custom-control-label" for="size-5">XL</label>
                         </div>
                     </form>
-                </div>
-                <div class="d-flex mb-4">
+                </div> --}}
+                {{-- color --}}
+                {{-- <div class="d-flex mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
                     <form>
                         <div class="custom-control custom-radio custom-control-inline">
@@ -129,7 +122,7 @@
                             <label class="custom-control-label" for="color-5">Green</label>
                         </div>
                     </form>
-                </div>
+                </div> --}}
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
@@ -144,7 +137,9 @@
                             </button>
                         </div>
                     </div>
-                    <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                    <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i>
+                        Add To Cart
+                    </button>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
@@ -165,6 +160,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
@@ -175,7 +171,7 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
                         <h4 class="mb-3">Product Description</h4>
-                        {{ $data->description }}
+                        {!! $data->description !!}
                     </div>
 
                     <div class="tab-pane fade" id="tab-pane-2">
@@ -281,7 +277,7 @@
     <!-- Giới thiệu thêm -->
     <div class="container-fluid py-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">You May Also Like</span></h2>
+            <h2 class="section-title px-5"><span class="px-2">Có Thể Bạn Cũng Thích</span></h2>
         </div>
         <div class="row px-xl-5">
             <div class="col">

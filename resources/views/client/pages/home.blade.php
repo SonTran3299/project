@@ -79,19 +79,18 @@
     <!-- Danh mục hàng demo -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
-            @foreach ($dataCategory as $data)
+            @foreach ($categoryDemo as $data)
                 <div class="col-lg-4 col-md-6 pb-1">
                     <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
                         <p class="text-right">15 Products</p>
                         <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                            <img class="img-fluid" src="{{ asset("client_asset/img/cat-$loop->iteration.jpg") }}"
+                            <img class="img-fluid" src="{{ asset("client_asset/img/cat-demo.png") }}"
                                 alt="">
                         </a>
                         <h5 class="font-weight-semi-bold m-0">{{ Str::title($data->name) }}</h5>
                     </div>
                 </div>
             @endforeach
-
         </div>
     </div>
     <!----------------------->
@@ -101,21 +100,21 @@
         <div class="row px-xl-5">
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5">
-                    <img src="{{ asset('client_asset/img/offer-1.png') }}" alt="">
+                    <img src="{{ asset('client_asset/img/cat-demo.png') }}" alt="">
                     <div class="position-relative" style="z-index: 1;">
-                        <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
-                        <h1 class="mb-4 font-weight-semi-bold">Spring Collection</h1>
-                        <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
+                        <h5 class="text-uppercase text-primary mb-3">Giảm giá 5%</h5>
+                        <h1 class="mb-4 font-weight-semi-bold">Sách nổi bật trong tuần</h1>
+                        {{-- <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a> --}}
                     </div>
                 </div>
             </div>
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-left text-white mb-2 py-5 px-5">
-                    <img src="{{ asset('client_asset/img/offer-2.png') }}" alt="">
+                    <img src="{{ asset('client_asset/img/cat-demo.png') }}" alt="">
                     <div class="position-relative" style="z-index: 1;">
-                        <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
-                        <h1 class="mb-4 font-weight-semi-bold">Winter Collection</h1>
-                        <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
+                        <h5 class="text-uppercase text-primary mb-3">Giảm giá 5%</h5>
+                        <h1 class="mb-4 font-weight-semi-bold">Sách nhiều người mua</h1>
+                        {{-- <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a> --}}
                     </div>
                 </div>
             </div>
@@ -129,25 +128,35 @@
             <h2 class="section-title px-5"><span class="px-2">Sản phẩm nổi bật</span></h2>
         </div>
         <div class="row px-xl-5 pb-3">
-            @foreach ($dataProduct as $data)
+            @foreach ($outstandingProducts as $data)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{{ asset("images/$data->main_image") }}"
+                            <img class="img-fluid w-100 rounded" src="{{ asset("images/product/main_image/$data->main_image") }}"
                                 alt="{{ $data->name }}">
+                            @if ($data->discount_percentage > 0)
+                                <span class="badge badge-danger position-absolute mt-2 mr-2"
+                                    style="top: 0; right: 0; z-index: 10;">
+                                    {{ round($data->discount_percentage * 100) }}%
+                                </span>
+                            @endif
                         </div>
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                             <h6 class="text-truncate mb-3">{{ $data->name }}</h6>
                             <div class="d-flex justify-content-center">
-                                <h6>{{ Number::currency($data->price) }}</h6>
+                                @php
+                                    $reducePrice = $data->price * (1 - $data->discount_percentage);
+                                @endphp
+                                <h6>{{ Number::currency($reducePrice) }}</h6>
                                 <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                            <button class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+                                Detail</button>
+                            <button data-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
+                                class="btn btn-sm text-dark p-0 add-product-to-cart"><i
+                                    class="fas fa-shopping-cart text-primary mr-1"></i>Thêm</button>
                         </div>
                     </div>
                 </div>
@@ -187,24 +196,33 @@
         </div>
 
         <div class="row px-xl-5 pb-3">
-            @foreach ($dataProduct as $data)
+            @foreach ($newProduct as $data)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100 rounded" src="{{ asset("images/$data->main_image") }}"
+                            <img class="img-fluid w-100 rounded" src="{{ asset("images/product/main_image/$data->main_image") }}"
                                 alt="{{ $data->name }}">
+                            @if ($data->discount_percentage > 0)
+                                <span class="badge badge-danger position-absolute mt-2 mr-2"
+                                    style="top: 0; right: 0; z-index: 10;">
+                                    {{ round($data->discount_percentage * 100) }}%
+                                </span>
+                            @endif
                         </div>
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                             <h6 class="text-truncate mb-3">{{ $data->name }}</h6>
                             <div class="d-flex justify-content-center">
-                                <h6>{{ Number::currency($data->price) }}</h6>
+                                @php
+                                    $reducePrice = $data->price * (1 - $data->discount_percentage);
+                                @endphp
+                                <h6>{{ Number::currency($reducePrice) }}</h6>
                                 <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
                             <button class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
                                 Detail</button>
-                            <button data-my-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
+                            <button data-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
                                 class="btn btn-sm text-dark p-0 add-product-to-cart"><i
                                     class="fas fa-shopping-cart text-primary mr-1"></i>Thêm</button>
                         </div>
@@ -231,21 +249,43 @@
         </div>
     </div>
     <!----------------------->
+
+    {{-- toast --}}
+    <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-end align-items-end"
+        style="min-height: 100px; position: fixed; bottom: 20px; right: 20px; z-index: 1050;" >
+        <div class="toast" role="alert" data-delay="3000">
+            <div class="toast-header">
+                {{-- <img src="..." class="rounded mr-2" alt="..."> --}}
+                <strong class="mr-auto">Bootstrap</strong>
+                {{-- <small>11 mins ago</small> --}}
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                Thêm sản phẩm thành công
+            </div>
+        </div>
+    </div>
 @endsection
 @section('my-js')
     <script>
         $(document).ready(function() {
             $('.add-product-to-cart').on('click', function(e) {
                 e.preventDefault();
-                var myUrl = $(this).data('my-url');
+                var url = $(this).data('url');
                 $.ajax({
-                    method: "GET", //method of form
-                    url: myUrl,
+                    method: "GET",
+                    url: url,
                     success: function(response) {
                         alert(response.message);
+                        $('.toast').toast('show');
                     }
                 });
             });
+            // $("#myBtn").click(function() {
+            //     $('.toast').toast('show');
+            // });
         });
     </script>
 @endsection

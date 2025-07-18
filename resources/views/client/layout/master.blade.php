@@ -62,6 +62,43 @@
 
     <!-- Template Javascript -->
     <script src="{{ asset('client_asset/js/main.js') }}"></script>
+
+    <script>
+        const cartCountUrl = "{{ route('client.cart-count') }}";
+        function updateCartCount() {
+            fetch(cartCountUrl) 
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Ensure the element exists before trying to update it
+                    const cartItemCountElement = document.getElementById('cart-item-count');
+                    if (cartItemCountElement) {
+                        cartItemCountElement.innerText = data.count;
+                        //console.log('New cart count updated globally:', data.count); // Global log
+                    }
+                    //else {
+                    //     console.warn('Element with ID "cart-item-count" not found. Cannot update cart count.');
+                    //}
+                })
+                .catch(error => {
+                    //console.error('Error fetching cart count in global updateCartCount:', error);
+                    const cartItemCountElement = document.getElementById('cart-item-count');
+                    if (cartItemCountElement) {
+                        cartItemCountElement.innerText = '0';
+                    }
+                });
+        }
+
+        $(document).ready(function() {
+            if (window.isAuthenticated) {
+                updateCartCount(); // Chỉ gọi khi đã đăng nhập
+            }
+        });
+    </script>
     @yield('my-js')
 </body>
 

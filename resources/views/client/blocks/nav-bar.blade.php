@@ -34,7 +34,7 @@
                                 data-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu rounded-0 m-0">
                                 <a href="{{ route('client.cart') }}" class="dropdown-item">Giỏ hàng</a>
-                                <a href="checkout.html" class="dropdown-item">Checkout</a>
+                                <a href="{{ route('client.checkout') }}" class="dropdown-item">Checkout</a>
                             </div>
                         </div>
                         <a href="{{ route('client.contact') }}"
@@ -58,15 +58,15 @@
                                         @csrf
                                         <button class="dropdown-item" href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
-                                 this.closest('form').submit();">
+                                            this.closest('form').submit();">
                                             {{ __('Log Out') }}
-                                    </button>
+                                        </button>
                                     </form>
                                 </div>
                             </div>
                         @else
-                            <a href="" class="nav-item nav-link">Đăng nhập</a>
-                            <a href="" class="nav-item nav-link">Đăng ký</a>
+                            <a href="{{ route('login') }}" class="nav-item nav-link">Đăng nhập</a>
+                            <a href="{{ route('register') }}" class="nav-item nav-link">Đăng ký</a>
                         @endauth
                     </div>
                 </div>

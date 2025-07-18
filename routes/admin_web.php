@@ -16,7 +16,7 @@ Route::get('admin/home', function () {
 Route::prefix('admin/product_category')
     ->controller(ProductCategoryController::class)
     ->name('admin.product_category.')
-    //->middleware(CheckIsAdmin::class)
+    ->middleware(CheckIsAdmin::class)
     ->group(function () {
         Route::get('list', 'list')->name('list');
 

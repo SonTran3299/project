@@ -12,4 +12,18 @@ class Cart extends Model
     protected $table = 'cart';
 
     public $guarded = [];
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class, 'product_category_id');
+    // }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

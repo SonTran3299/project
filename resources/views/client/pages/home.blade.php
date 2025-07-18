@@ -3,7 +3,7 @@
 @section('nav-homepage')
     <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0"
         id="navbar-vertical">
-        @include('client.blocks.side-bar', ['dataCategory' => $dataCategory])
+        @include('client.blocks.side-bar')
     </nav>
 @endsection
 
@@ -82,10 +82,13 @@
             @foreach ($categoryDemo as $data)
                 <div class="col-lg-4 col-md-6 pb-1">
                     <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                        <p class="text-right">15 Products</p>
+                        @if (array_key_exists($data->id, $productCounts))
+                            {{ $productCounts[$data->id] }} Sản phẩm
+                        @else
+                            0 Sản phẩm
+                        @endif
                         <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                            <img class="img-fluid" src="{{ asset("client_asset/img/cat-demo.png") }}"
-                                alt="">
+                            <img class="img-fluid" src="{{ asset('client_asset/img/cat-demo.png') }}" alt="">
                         </a>
                         <h5 class="font-weight-semi-bold m-0">{{ Str::title($data->name) }}</h5>
                     </div>
@@ -132,7 +135,8 @@
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100 rounded" src="{{ asset("images/product/main_image/$data->main_image") }}"
+                            <img class="img-fluid w-100 rounded"
+                                src="{{ asset("images/product/main_image/$data->main_image") }}"
                                 alt="{{ $data->name }}">
                             @if ($data->discount_percentage > 0)
                                 <span class="badge badge-danger position-absolute mt-2 mr-2"
@@ -200,7 +204,8 @@
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100 rounded" src="{{ asset("images/product/main_image/$data->main_image") }}"
+                            <img class="img-fluid w-100 rounded"
+                                src="{{ asset("images/product/main_image/$data->main_image") }}"
                                 alt="{{ $data->name }}">
                             @if ($data->discount_percentage > 0)
                                 <span class="badge badge-danger position-absolute mt-2 mr-2"
@@ -222,7 +227,8 @@
                         <div class="card-footer d-flex justify-content-between bg-light border">
                             <button class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
                                 Detail</button>
-                            <button data-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
+                            <button data-product="{{ $data->id }}"
+                                data-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
                                 class="btn btn-sm text-dark p-0 add-product-to-cart"><i
                                     class="fas fa-shopping-cart text-primary mr-1"></i>Thêm</button>
                         </div>
@@ -252,11 +258,11 @@
 
     {{-- toast --}}
     <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-end align-items-end"
-        style="min-height: 100px; position: fixed; bottom: 20px; right: 20px; z-index: 1050;" >
+        style="min-height: 100px; position: fixed; bottom: 20px; right: 20px; z-index: 1050;">
         <div class="toast" role="alert" data-delay="3000">
             <div class="toast-header">
                 {{-- <img src="..." class="rounded mr-2" alt="..."> --}}
-                <strong class="mr-auto">Bootstrap</strong>
+                <strong class="mr-auto">Thông báo</strong>
                 {{-- <small>11 mins ago</small> --}}
                 <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -273,19 +279,27 @@
         $(document).ready(function() {
             $('.add-product-to-cart').on('click', function(e) {
                 e.preventDefault();
+
                 var url = $(this).data('url');
+                var productId = $(this).data('product');
                 $.ajax({
-                    method: "GET",
+                    method: "POST",
                     url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: productId
+                    },
                     success: function(response) {
-                        alert(response.message);
+                        updateCartCount();
                         $('.toast').toast('show');
+                    },
+                    statusCode: {
+                        401: function() {
+                            window.location.href = "{{ route('login') }}";
+                        }
                     }
                 });
             });
-            // $("#myBtn").click(function() {
-            //     $('.toast').toast('show');
-            // });
         });
     </script>
 @endsection

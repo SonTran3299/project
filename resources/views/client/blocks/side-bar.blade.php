@@ -1,4 +1,4 @@
-<div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
+<div class="navbar-nav w-100 overflow-auto" style="height: 410px">
     {{-- <div class="nav-item dropdown">
         <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i
                 class="fa fa-angle-down float-right mt-1"></i></a>
@@ -10,9 +10,12 @@
     </div> --}}
     @if (isset($dataCategory) && $dataCategory->count() > 0)
         @foreach ($dataCategory as $category)
-            <a href="" class="nav-item nav-link">
-                {{ Str::title($category->name) }}
-            </a>
+            <form action="{{ route('client.shop') }}" method="get">
+                <button type="submit" class="btn text-left nav-item nav-link">
+                    <input type="hidden" name="category-filter" value="{{ $category->id }}">
+                    {{ Str::title($category->name) }}
+                </button>
+            </form>
         @endforeach
     @else
         <p class="text-muted p-3">Chưa có danh mục nào.</p>

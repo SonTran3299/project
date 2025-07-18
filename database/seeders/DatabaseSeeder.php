@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //ProductCategory::factory(5)->create();
+        ProductCategory::factory(5)->create();
         $categories = [
             'truyện tranh',
             'truyện chữ',
@@ -32,10 +32,10 @@ class DatabaseSeeder extends Seeder
             ProductCategory::factory()->withNameAndSlug($categoryName)->create();
         }
         User::factory(5)->create();
-        Shipper::factory(5)->create();
+        //Shipper::factory(5)->create();
         Product::factory(10)->create();
         //ProductImage::factory(5)->create();
-        Cart::factory(10)->create();
-        Order::factory(5)->create();
+        //Cart::factory(10)->create();
+        //Order::factory(5)->create();
     }
 }

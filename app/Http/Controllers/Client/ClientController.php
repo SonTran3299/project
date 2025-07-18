@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
-    public function loadCategory()
-    {
-        return DB::table('product_category')->orderBy('name', 'asc')->get();
-    }
+    // public function loadCategory()
+    // {
+    //     return DB::table('product_category')->orderBy('name', 'asc')->get();
+    // }
 
     public function shop(Request $request)
     {
+        $categoryId = $request->query('category-filter') ?? null;
         $searchQuery = $request->query('query') ?? null;
 
         $sort  = $request->sort ?? 'latest';
@@ -33,32 +34,35 @@ class ClientController extends Controller
 
         $itemPerPage = config('my-config.client_product_per_page');
 
-        if (!$searchQuery) {
-            $dataProduct = Product::orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
-        } else {
-            $dataProduct = Product::where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
+        $query = Product::orderBy($column, $sort)->whereBetween('price', [$minPrice, $maxPrice]);
+        if ($categoryId) {
+            $query->where('product_category_id', $categoryId);
         }
+        if ($searchQuery) {
+            $query->where('name', 'LIKE', "%$searchQuery%");
+        }
+        $dataProduct = $query->paginate($itemPerPage);
 
-        return view('client.pages.shop', ['dataProduct' => $dataProduct, 'dataCategory' => $this->loadCategory()]);
+        // if (!$searchQuery) {
+        //     $dataProduct = Product::orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
+        // } else {
+        //     $dataProduct = Product::where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
+        // }
+
+        return view('client.pages.shop', ['dataProduct' => $dataProduct]);
     }
 
     public function detail(Product $product)
     {
-        return view('client.pages.detail', ['data' => $product, 'dataCategory' => $this->loadCategory()]);
+        return view('client.pages.detail', ['data' => $product]);
     }
 
     public function contact()
     {
-        return view('client.pages.contact', ['dataCategory' => $this->loadCategory()]);
+        return view('client.pages.contact');
     }
 
-    // public function login()
-    // {
-    //     return view('client.pages.user.login');
-    // }
-
-    // public function register()
-    // {
-    //     return view('client.pages.user.register');
+    // public function shopWithCategory(){
+    //     return view('client.pages.shop-with-category', ['dataProduct' => $dataProduct, 'dataCategory' => $this->loadCategory()]);
     // }
 }

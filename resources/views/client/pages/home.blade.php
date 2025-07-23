@@ -14,8 +14,8 @@
                 <img class="img-fluid" src="{{ asset('client_asset/img/carousel-1.jpg') }}" alt="Image">
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3" style="max-width: 700px;">
-                        <h4 class="text-light text-uppercase font-weight-medium mb-3">Giảm 10% cho đơn hàng đầu tiên</h4>
-                        <h3 class="display-4 text-white font-weight-semi-bold mb-4">Fashionable Dress</h3>
+                        <h4 class="text-light text-uppercase font-weight-medium mb-3">Giảm thêm 10% cho khách hàng mới</h4>
+                        <h3 class="display-4 text-white font-weight-semi-bold mb-4">Sách</h3>
                         <a href="" class="btn btn-light py-2 px-3">Mua ngay</a>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                             <img class="img-fluid w-100 rounded"
-                                src="{{ asset("images/product/main_image/$data->main_image") }}"
+                                src="{{ $data->main_image !== null ? asset("images/product/main_image/$data->main_image") : asset('images/product/default-product-image.jpg') }}"
                                 alt="{{ $data->name }}">
                             @if ($data->discount_percentage > 0)
                                 <span class="badge badge-danger position-absolute mt-2 mr-2"
@@ -205,7 +205,7 @@
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                             <img class="img-fluid w-100 rounded"
-                                src="{{ asset("images/product/main_image/$data->main_image") }}"
+                                src="{{ $data->main_image !== null ? asset("images/product/main_image/$data->main_image") : asset('images/product/default-product-image.jpg') }}"
                                 alt="{{ $data->name }}">
                             @if ($data->discount_percentage > 0)
                                 <span class="badge badge-danger position-absolute mt-2 mr-2"
@@ -258,7 +258,7 @@
 
     {{-- toast --}}
     <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-end align-items-end"
-        style="min-height: 100px; position: fixed; bottom: 20px; right: 20px; z-index: 1050;">
+        style="min-height: 100px; position: fixed; bottom: 20px; right: 20px; z-index: 1;">
         <div class="toast" role="alert" data-delay="3000">
             <div class="toast-header">
                 {{-- <img src="..." class="rounded mr-2" alt="..."> --}}

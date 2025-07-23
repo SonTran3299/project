@@ -15,7 +15,7 @@
             </div>
 
             {{-- Search --}}
-            @include('admin.blocks.search_form', ['actionFormRoute' => route('admin.product.list')])
+            @include('admin.blocks.search_form', ['actionFormRoute' => route('admin.user.list')])
 
             <!-- /.card-header -->
             <div class="card-body">
@@ -49,8 +49,9 @@
                                         action="{{ route('admin.product_category.destroy', ['productCategory' => $data->id]) }}"
                                         method="post" class="d-inline">
                                         @csrf
-                                        <button class="btn btn-outline-danger" type="submit"
-                                            onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></button>
+                                        <button class="btn btn-outline-danger {{ $data->name === 'admin' ? 'd-none' : '' }}"
+                                            type="submit" onclick="return confirm('Are you sure?')"><i
+                                                class="fa fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>

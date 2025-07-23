@@ -9,10 +9,11 @@ use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class ProductCategoryController extends Controller
 {
-    public function list(Request $request)
+    public function list(Request $request): View
     {
         $searchQuery = $request->query('query') ?? null;
         $sort  = $request->sort ?? 'latest';
@@ -25,7 +26,6 @@ class ProductCategoryController extends Controller
         [$column, $sort] = $arraySort;
 
         $itemPerPage = config('my-config.item_per_page');
-        //$datas = ProductCategory::orderBy('id', 'DESC')->paginate($itemPerPage);
 
         if (!$searchQuery) {
             $datas = DB::table('product_category')->orderBy($column, $sort)->paginate($itemPerPage);
@@ -36,7 +36,7 @@ class ProductCategoryController extends Controller
         return view('admin.pages.product_category.list', ['datas' => $datas]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.pages.product_category.create');
     }
@@ -70,7 +70,7 @@ class ProductCategoryController extends Controller
         return redirect()->route('admin.product_category.list')->with('msg', $msg);
     }
 
-    public function detail(ProductCategory $productCategory)
+    public function detail(ProductCategory $productCategory): View
     {
         return view('admin.pages.product_category.detail', ['data' => $productCategory]);
     }

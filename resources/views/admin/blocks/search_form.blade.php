@@ -1,5 +1,14 @@
-<div class="container mt-2 d-flex justify-content-end">
-    <form action="{{ $actionFormRoute }}" method="GET" class="form-inline my-2 my-lg-0 ">
+<div class="container mt-2 d-flex justify-content-between">
+    @if (!Request::routeIs('admin.user.list'))
+        <div>
+            <a class="btn btn-success" href="{{ $createUrl }}">
+                <i class="fa fa-plus"></i> {{ $title }}
+            </a>
+        </div>
+    @endif
+
+    <form action="{{ $actionFormRoute}}" method="GET"
+        class="form-inline my-2 my-lg-0 {{ Request::routeIs('admin.user.list') ? 'ml-auto' : '' }}">
         <label for="query"></label>
         <input class="form-control mr-sm-2" type="search" id="query" name="query"
             value="{{ request()->get('query') ?? '' }}" placeholder="Tìm kiếm">

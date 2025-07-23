@@ -14,7 +14,12 @@
                 <h3 class="card-title">Danh sách danh mục sản phẩm</h3>
             </div>
             {{-- Search --}}
-            @include('admin.blocks.search_form', ['actionFormRoute' => route('admin.product_category.list')])
+
+            @include('admin.blocks.search_form', [
+                'actionFormRoute' => route('admin.product_category.list'),
+                'createUrl' => route('admin.product_category.create'),
+                'title' => 'Thêm danh mục'
+            ])
 
             <!-- /.card-header -->
             <div class="card-body">

@@ -27,7 +27,9 @@ class ProductFactory extends Factory
 
         return [
             'status' => fake()->boolean(),
-            'name' => fake()->name(),
+            //'name' => fake()->name(),
+            //'name' => fake()->words(2, true),
+            'name' => fake()->words(rand(2, 4), true), // 2 đến 4 từ ngẫu nhiên
             'price' => fake()->randomNumber(7, false),
             'stock' => fake()->randomNumber(3, false),
             'main_image' => $imageName.'.jpg',

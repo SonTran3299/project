@@ -8,7 +8,11 @@ use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\HomeController;
 use App\Mail\TestEmailTemplate;
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +49,7 @@ Route::prefix('user')
 
 Route::get('/', [HomeController::class, 'index'])->name('client.home');
 
-Route::get('test-mail', function () {
-    Mail::to('tvs32.ys@gmail.com')->send(new TestEmailTemplate());
-});
-
+// Route::get('mail', function () {
+//     $orderItems = OrderItem::where('order_id', 5)->get();
+//     return view('mail.customer', ['orderItems' => $orderItems]);
+// });

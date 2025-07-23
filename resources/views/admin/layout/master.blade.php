@@ -7,11 +7,12 @@
     <title>Admin Page Project</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{-- <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script> --}}
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('admin_asset/dist/css/adminlte.css') }}">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
     <link rel="stylesheet" href="{{ asset('admin_asset/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Tempusdominus Bbootstrap 4 -->
     <link rel="stylesheet"
@@ -30,6 +31,10 @@
     <link rel="stylesheet" href="{{ asset('admin_asset/plugins/summernote/summernote-bs4.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    {{-- Chart --}}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    {{-- Quill --}}
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

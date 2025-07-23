@@ -41,7 +41,7 @@
             <div class="row px-xl-5">
                 <div class="col-lg-8">
                     <div class="mb-4">
-                        <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
+                        <h4 class="font-weight-semi-bold mb-4">Địa chỉ nhận đơn</h4>
                         <div class="col-md-12 form-group">
                             <label>Tên</label>
                             <input class="form-control" type="text" name="name" value="{{ $user->name }}" readonly>
@@ -78,9 +78,9 @@
                             @php $priceTotal = 0 @endphp
                             @foreach ($cart as $data)
                                 <div class="d-flex justify-content-between">
-                                    <p>{{ $data['name'] }}</p>
+                                    <p>{{ $data->product->name }}</p>
                                     @php
-                                        $price = $data['price'] * $data['quantity'];
+                                        $price = $data->product->price * $data->quantity;
                                         $priceTotal += $price;
                                     @endphp
                                     <p>{{ Number::currency($price) }}</p>

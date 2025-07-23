@@ -2,7 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\Product;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,16 +11,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TestEmailTemplate extends Mailable
+class CustomerEmailTemplate extends Mailable
 {
     use Queueable, SerializesModels;
-    public Product $product;
+    public Order $order;
+    public User $user;
     /**
      * Create a new message instance.
      */
-    public function __construct(Product $product)
+    public function __construct(Order $order, User $user)
     {
-        $this->product = $product;
+        $this->order = $order;
+        $this->user = $user;
     }
 
     /**
@@ -28,7 +31,7 @@ class TestEmailTemplate extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Email Template',
+            subject: 'Customer Email Template',
         );
     }
 
@@ -38,8 +41,11 @@ class TestEmailTemplate extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.test',
-            with: ['product' => $this->product->name]
+            view: 'mail.customer',
+            with: [
+                'order' => $this->order,
+                'user' => $this->user,
+            ],
         );
     }
 

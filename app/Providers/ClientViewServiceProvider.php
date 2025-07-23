@@ -25,7 +25,7 @@ class ClientViewServiceProvider extends ServiceProvider
     {
         View::composer('*', function ($view) { 
             
-            $view->with('dataCategory', DB::table('product_category')->orderBy('name', 'asc')->get());
+            $view->with('categoryList', DB::table('product_category')->orderBy('name', 'asc')->get());
         });
     }
 }

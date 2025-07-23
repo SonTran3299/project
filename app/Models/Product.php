@@ -11,12 +11,14 @@ class Product extends Model
    
     protected $table = 'product';
 
-    protected $fillable = [
-        'name',
-        'status',
-        'created_at',
-        'updated_at'
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'status',
+    //     'created_at',
+    //     'updated_at'
+    // ];
+
+    public $guarded = [];
 
     public function productCategory(){
         return $this->belongsTo(ProductCategory::class, 'product_category_id');

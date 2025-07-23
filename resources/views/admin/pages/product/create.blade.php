@@ -6,61 +6,87 @@
             <div class="card-header">
                 <h3 class="card-title">Tạo sản phẩm mới</h3>
             </div>
-            <form role="form" action="{{ route('admin.product.store') }}" method="post">
+            <form role="form" action="{{ route('admin.product.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
+                        <label for="main-image">Ảnh sản phẩm</label>
+                        <input type="file" class="form-control" id="main-image" name="main_image">
+                    </div>
+                    @error('main_image')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+
+                    <div class="form-group">
                         <label for="name">Tên sản phẩm</label>
                         <input type="text" class="form-control" id="name" name="name"
-                            placeholder="Enter category name" value="{{ old('name') }}">
+                            placeholder="Nhập tên sản phẩm" value="{{ old('name') }}">
                     </div>
                     @error('name')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
+
                     <div class="form-group">
                         <label for="description">Mô tả sản phẩm</label>
-                        <input type="text" class="form-control" id="description" name="description" placeholder="Nhập mô tả sản phẩm"
-                            value="{{ old('description') }}">
+                        <div id="description_html"></div>
+                        <input type="hidden" name="description" id="description">
+                        <input type="hidden" name="old_description" id="old_description" value="{{ old('description') }}">
                     </div>
                     @error('description')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
+
                     <div class="form-group">
                         <label for="price">Giá</label>
-                        <input type="number" class="form-control" id="price" name="price" placeholder="Nhập giá của sản phẩm"
-                            value="{{ old('price') }}">
+                        <input type="number" class="form-control" id="price" name="price"
+                            placeholder="Nhập giá của sản phẩm" value="{{ old('price') }}">
                     </div>
                     @error('price')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
+
+                    <div class="form-group">
+                        <label for="discount_percentage">Giảm giá sản phẩm (nếu cần)</label>
+                        <input type="number" step="any" class="form-control" id="discount_percentage" name="discount_percentage"
+                            placeholder="Mặc định 0%" value="{{ old('discount_percentage') }}">
+                    </div>
+                    @error('discount_percentage')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                    
                     <div class="form-group">
                         <label for="stock">Tồn kho</label>
-                        <input type="number" class="form-control" id="stock" name="stock" placeholder="Nhập tồn kho của sản phẩm"
-                            value="{{ old('stock') }}">
+                        <input type="number" class="form-control" id="stock" name="stock"
+                            placeholder="Nhập tồn kho của sản phẩm" value="{{ old('stock') }}">
                     </div>
                     @error('stock')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
+
                     <div class="form-group">
                         <label for="category">Danh mục sản phẩm</label>
                         <div class="form-group">
-                            <select id="category" name="category" class="form-control">
+                            <select id="category" name="product_category_id" class="form-control">
                                 <option value="">---Chọn---</option>
-                                <option {{ old('status') === '1' ? 'selected' : '' }} value="1">Show</option>
-                                <option {{ old('status') === '0' ? 'selected' : '' }} value="0">Hide</option>
+                                @foreach ($categoryList as $data)
+                                    <option {{ old('product_category_id') === $data->id ? 'selected' : '' }}
+                                        value="{{ $data->id }}">
+                                        {{ $data->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
-                    @error('category')
+                    @error('product_category_id')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
+
                     <div class="form-group">
                         <label for="status">Tình trạng</label>
                         <div class="form-group">
                             <select id="status" name="status" class="form-control">
                                 <option value="">---Chọn---</option>
-                                <option {{ old('status') === '1' ? 'selected' : '' }} value="1">Show</option>
-                                <option {{ old('status') === '0' ? 'selected' : '' }} value="0">Hide</option>
+                                <option {{ old('status') === '1' ? 'selected' : '' }} value="1">Hiện</option>
+                                <option {{ old('status') === '0' ? 'selected' : '' }} value="0">Ẩn</option>
                             </select>
                         </div>
                     </div>
@@ -77,7 +103,22 @@
 @endsection
 
 @section('my-js')
-    <script type="text/javascript">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script>
+        const quill = new Quill('#description_html', {
+            theme: 'snow'
+        });
+
+        quill.on('text-change', function(delta, oldDelta, source) {
+            document.getElementById("description").value = quill.root.innerHTML;
+        });
+
+        const oldDescription = document.getElementById("old_description").value;
+        if (oldDescription) {
+            quill.clipboard.dangerouslyPasteHTML(oldDescription);
+        }
+    </script>
+    {{-- <script type="text/javascript">
         $(document).ready(function() {
             $('#name').on('keyup', function() {
                 var slug = $(this).val();
@@ -94,5 +135,5 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 @endsection

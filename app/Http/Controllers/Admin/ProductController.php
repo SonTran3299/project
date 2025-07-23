@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductStoreRequest;
 use App\Http\Requests\Admin\ProductUpdateRequest;
+use App\Models\Cart;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -40,12 +42,26 @@ class ProductController extends Controller
 
     public function store(ProductStoreRequest $request)
     {
+        if($request->hasFile('main_image')){
+            $image = $request->file('main_image');
+            $fileName = $image->getClientOriginalName();
+            $extension = $image->getClientOriginalExtension(); 
+            $fileName = pathinfo($fileName, PATHINFO_FILENAME);
+
+            $fileName = sprintf('%s_%s.%s', $fileName, uniqid(), $extension);
+
+            $image->move(public_path('images/product/main_image'), $fileName);
+        }
+
         $check = Product::create([
             'name' => $request->name,
-            'slug' => $request->description,
+            'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
-            'status' => $request->status
+            'status' => $request->status,
+            'product_category_id' => $request->product_category_id,
+            'discount_percentage' => $request->discount_percentage,
+            'main_image' => $fileName,
         ]) ? 'Thành công' : 'Thất bại'; //mass asignment
 
         return redirect()->route('admin.product.list')->with('msg', $check);

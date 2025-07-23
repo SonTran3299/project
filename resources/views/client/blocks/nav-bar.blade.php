@@ -48,9 +48,11 @@
                                 <a href="#" class="nav-link dropdown-toggle"
                                     data-toggle="dropdown">{{ Auth::user()->name }}</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="{{ route('dashboard') }}" class="dropdown-item">
-                                        Dashboard
-                                    </a>
+                                    @if (Auth::user()->role)
+                                        <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                                            Admin Dashboard
+                                        </a>
+                                    @endif
                                     <a href="{{ route('profile.edit') }}" class="dropdown-item">
                                         Profile
                                     </a>

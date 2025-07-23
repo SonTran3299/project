@@ -8,8 +8,8 @@
             <a href="" class="dropdown-item">Baby's Dresses</a>
         </div>
     </div> --}}
-    @if (isset($dataCategory) && $dataCategory->count() > 0)
-        @foreach ($dataCategory as $category)
+    @if (isset($categoryList) && $categoryList->count() > 0)
+        @foreach ($categoryList as $category)
             <form action="{{ route('client.shop') }}" method="get">
                 <button type="submit" class="btn text-left nav-item nav-link">
                     <input type="hidden" name="category-filter" value="{{ $category->id }}">

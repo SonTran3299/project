@@ -19,15 +19,29 @@
             </div>
         </div>
 
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                <li class="nav-item has-treeview">
+                    {{-- tắt active sau --}}
+                    <a href="{{route('admin.dashboard')}}" class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}"> 
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item has-treeview menu-open">
-                    <a href="#" class="nav-link active">
+                    <a href="#" class="nav-link {{ Request::routeIs('admin.dashboard') ? '' : 'active' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
-                            Managed
+                            Quản lý
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>

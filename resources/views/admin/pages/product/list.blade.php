@@ -15,7 +15,11 @@
             </div>
 
             {{-- Search --}}
-            @include('admin.blocks.search_form', ['actionFormRoute' => route('admin.product.list')])
+            @include('admin.blocks.search_form', [
+                'actionFormRoute' => route('admin.product.list'),
+                'createUrl' => route('admin.product.create'),
+                'title' => 'Thêm sản phẩm'
+            ])
 
             <!-- /.card-header -->
             <div class="card-body">
@@ -39,7 +43,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->name }}</td>
                                 <td>
-                                    <img src="{{ asset("images/$data->main_image") }}" style="width:160px"
+                                    <img src="{{ asset("images/product/main_image/$data->main_image") }}" style="width:160px"
                                         alt="{{ $data->name }}">
                                 </td>
                                 <td>{{ $data->price }}</td>
@@ -55,8 +59,7 @@
                                 <td>
                                     <a href="{{ route('admin.product.detail', ['product' => $data->id]) }}"
                                         class="btn btn-outline-info"><i class="fa fa-eye"></i></a>
-                                    <form
-                                        action="{{ route('admin.product.destroy', ['product' => $data->id]) }}"
+                                    <form action="{{ route('admin.product.destroy', ['product' => $data->id]) }}"
                                         method="post" class="d-inline">
                                         @csrf
                                         <button class="btn btn-outline-danger" type="submit"

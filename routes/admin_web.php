@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
@@ -42,7 +43,7 @@ Route::prefix('admin/product_category')
 Route::prefix('admin/product')
     ->controller(ProductController::class)
     ->name('admin.product.')
-    //->middleware(CheckIsAdmin::class)
+    ->middleware(CheckIsAdmin::class)
     ->group(function () {
         Route::get('list', 'list')->name('list');
 
@@ -58,4 +59,6 @@ Route::prefix('admin/product')
     });
 
 //---User---
-Route::get('admin/user', [UserController::class, 'list'])->name('admin.user.list');
+Route::get('admin/user', [UserController::class, 'list'])->name('admin.user.list')->middleware(CheckIsAdmin::class);
+
+Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard')->middleware(CheckIsAdmin::class);

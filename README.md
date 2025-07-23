@@ -61,7 +61,7 @@
         ```
     * Tạo commit với thông điệp:
         ```bash
-        git commit -m "Thông điệp mô tả ngắn gọn về các thay đổi của bạn"
+        git commit -m "Thêm mô tả"
         ```
     * Đẩy các thay đổi lên GitHub (nhánh `main`):
         ```bash

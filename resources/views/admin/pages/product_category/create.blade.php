@@ -4,34 +4,34 @@
     <div class="col-md-12">
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">Create Product Category</h3>
+                <h3 class="card-title">Tạo danh mục sản phẩm</h3>
             </div>
             <form role="form" action="{{ route('admin.product_category.store') }}" method="post">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name">Tên danh mục sản phẩm</label>
                         <input type="text" class="form-control" id="name" name="name"
-                            placeholder="Enter category name" value="{{ old('name') }}">
+                            placeholder="Nhập tên danh mục sản phẩm" value="{{ old('name') }}">
                     </div>
                     @error('name')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
                         <label for="slug">Slug</label>
-                        <input type="text" class="form-control" id="slug" name="slug" placeholder="Enter slug"
+                        <input type="text" class="form-control" id="slug" name="slug" placeholder="Nhập slug"
                             value="{{ old('slug') }}">
                     </div>
                     @error('slug')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
-                        <label for="status">Status</label>
+                        <label for="status">Trạng thái</label>
                         <div class="form-group">
                             <select id="status" name="status" class="form-control">
-                                <option value="">---Select---</option>
-                                <option {{ old('status') === '1' ? 'selected' : '' }} value="1">Show</option>
-                                <option {{ old('status') === '0' ? 'selected' : '' }} value="0">Hide</option>
+                                <option value="">---Chọn---</option>
+                                <option {{ old('status') === '1' ? 'selected' : '' }} value="1">Hiện</option>
+                                <option {{ old('status') === '0' ? 'selected' : '' }} value="0">Ẩn</option>
                             </select>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                     @enderror
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary" name="create_category">Create</button>
+                    <button type="submit" class="btn btn-primary" name="create_category">Tạo danh mục</button>
                 </div>
             </form>
         </div>

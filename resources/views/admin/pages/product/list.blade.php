@@ -4,13 +4,7 @@
     <div class="col-md-12">
         <div class="card card-secondary">
             <div class="card-header">
-                <h3>
-                    @if (session('msg'))
-                        <div class="alert alert-success">
-                            {{ session('msg') }}
-                        </div>
-                    @endif
-                </h3>
+
                 <h3 class="card-title">Danh sách sản phẩm</h3>
             </div>
 
@@ -18,7 +12,7 @@
             @include('admin.blocks.search_form', [
                 'actionFormRoute' => route('admin.product.list'),
                 'createUrl' => route('admin.product.create'),
-                'title' => 'Thêm sản phẩm'
+                'title' => 'Thêm sản phẩm',
             ])
 
             <!-- /.card-header -->
@@ -46,7 +40,7 @@
                                     <img src="{{ asset("images/product/main_image/$data->main_image") }}" style="width:160px"
                                         alt="{{ $data->name }}">
                                 </td>
-                                <td>{{ $data->price }}</td>
+                                <td>{{ Number::currency($data->price) }}</td>
                                 <td>{{ $data->stock }}</td>
                                 <td>
                                     <button class="btn {{ $data->status ? 'btn-success' : 'btn-danger' }}">
@@ -63,7 +57,8 @@
                                         method="post" class="d-inline">
                                         @csrf
                                         <button class="btn btn-outline-danger" type="submit"
-                                            onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></button>
+                                            onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?')"><i
+                                                class="fa fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
@@ -77,4 +72,9 @@
             </div>
         </div>
     </div>
+
+    
+@endsection
+@section('my-js')
+    @include('admin.blocks.notification')
 @endsection

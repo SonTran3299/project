@@ -25,12 +25,15 @@ class ProductFactory extends Factory
         $imageName = "image_".uniqid();
         file_put_contents(public_path('images/product/main_image/'.$imageName.'.jpg'),file_get_contents($imageUrl));
 
+        $types = ['Truyện tranh', 'Tiểu thuyết', 'Tập thơ', 'Ký sự', 'Sách chuyên ngành', 'Tạp chí', 'Sách tham khảo', 'Truyện trinh thám'];
+        $randomType = fake()->randomElement($types);
+        $randomVolume = rand(1, 10);
+        $name = $randomType . ' quyển ' . $randomVolume;
+
         return [
             'status' => fake()->boolean(),
-            //'name' => fake()->name(),
-            //'name' => fake()->words(2, true),
-            'name' => fake()->words(rand(2, 4), true), // 2 đến 4 từ ngẫu nhiên
-            'price' => fake()->randomNumber(7, false),
+            'name' => $name,
+            'price' => fake()->randomNumber(6, false),
             'stock' => fake()->randomNumber(3, false),
             'main_image' => $imageName.'.jpg',
             'discount_percentage' => fake()->randomFloat(2, 0, 0.5),

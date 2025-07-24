@@ -10,9 +10,9 @@
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name">Tên danh mục sản phẩm</label>
                         <input type="text" class="form-control" id="name" name="name"
-                            placeholder="Enter category name" value="{{ $data->name }}">
+                            placeholder="Nhập tên danh mục sản phẩm" value="{{ $data->name }}">
                     </div>
                     @error('name')
                         <div class="alert alert-danger">{{ $message }}</div>
@@ -26,12 +26,12 @@
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
-                        <label for="status">Status</label>
+                        <label for="status">Trạng thái</label>
                         <div class="form-group">
                             <select id="status" name="status" class="form-control">
-                                <option value="">---Select---</option>
-                                <option {{ $data->status == '1' ? 'selected' : '' }} value="1">Show</option>
-                                <option {{ $data->status == '0' ? 'selected' : '' }} value="0">Hide</option>
+                                <option value="">---Chọn---</option>
+                                <option {{ $data->status == '1' ? 'selected' : '' }} value="1">Hiện</option>
+                                <option {{ $data->status == '0' ? 'selected' : '' }} value="0">Ẩn</option>
                             </select>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                     @enderror
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary" name="update_category">Update</button>
+                    <button type="submit" class="btn btn-primary" name="update_category">Cập nhật</button>
                 </div>
             </form>
         </div>

@@ -16,7 +16,7 @@ class ProductCategoryFactory extends Factory
      *
      * @var string
      */
-    protected $model = ProductCategory::class; // Đảm bảo đúng tên model
+    protected $model = ProductCategory::class;
     /**
      * Define the model's default state.
      *
@@ -36,19 +36,47 @@ class ProductCategoryFactory extends Factory
     }
 
     /**
-     * Định nghĩa một state tùy chỉnh để tạo Category với tên và slug cụ thể.
+     *
      *
      * @param string $name
      * @return static
      */
-    public function withNameAndSlug(string $name): static
+    // public function customCategoryName(string $name): static
+    // {
+    //     return $this->state(fn(array $attributes) => [
+    //         'name' => $name,
+    //         'slug' => Str::slug($name),
+    //         'status' => fake()->boolean(),
+    //         'created_at' => now(),
+    //         'updated_at' => now()
+    //     ]);
+    // }
+
+    /**
+     * 
+     * 
+     *
+     * @return void
+     */
+    public static function customCategoryName(): void
     {
-        return $this->state(fn(array $attributes) => [
-            'name' => $name,
-            'slug' => Str::slug($name),
-            'status' => fake()->boolean(),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $categories = [
+            'truyện tranh',
+            'truyện chữ',
+            "tiểu thuyết",
+            'sách văn học',
+            'truyện trinh thám',
+            'sách tham khảo',
+            'truyện kinh dị',
+            'từ điển'
+        ];
+
+        foreach ($categories as $categoryName) {
+            self::new()->create([ 
+                'name' => $categoryName,
+                'slug' => Str::slug($categoryName),
+                'status' => true,
+            ]);
+        }
     }
 }

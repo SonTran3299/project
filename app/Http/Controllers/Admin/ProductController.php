@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -42,10 +43,10 @@ class ProductController extends Controller
 
     public function store(ProductStoreRequest $request)
     {
-        if($request->hasFile('main_image')){
+        if ($request->hasFile('main_image')) {
             $image = $request->file('main_image');
             $fileName = $image->getClientOriginalName();
-            $extension = $image->getClientOriginalExtension(); 
+            $extension = $image->getClientOriginalExtension();
             $fileName = pathinfo($fileName, PATHINFO_FILENAME);
 
             $fileName = sprintf('%s_%s.%s', $fileName, uniqid(), $extension);
@@ -62,15 +63,23 @@ class ProductController extends Controller
             'product_category_id' => $request->product_category_id,
             'discount_percentage' => $request->discount_percentage,
             'main_image' => $fileName,
-        ]) ? 'Thành công' : 'Thất bại'; //mass asignment
+        ]) ? 'Tạo sản phẩm thành công' : 'Tạo sản phẩm thất bại'; //mass asignment
 
         return redirect()->route('admin.product.list')->with('msg', $check);
     }
 
     public function destroy(Product $product)
     {
-        $msg = $product->delete() ? 'Thành công' : 'Thất bại';
+        $mainImage = $product->main_image;
 
+        if ($mainImage) {
+            $filePath = public_path('images/product/main_image/' . $mainImage);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+        }
+
+        $msg = $product->delete() ? 'Xóa sản phẩm thành công' : 'Xóa sản phẩm thất bại';
         return redirect()->route('admin.product.list')->with('msg', $msg);
     }
 
@@ -82,9 +91,13 @@ class ProductController extends Controller
     public function update(ProductUpdateRequest $request, Product $product)
     {
         $product->name = $request->name;
-        $product->slug = $request->slug;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->discount_percentage = $request->discount_percentage;
+        $product->product_category_id = $request->product_category_id;
         $product->status = $request->status;
-        $check = $product->save() ? 'Thành công' : 'Thất bại'; //update record
+        $check = $product->save() ? 'Cập nhật sản phẩm thành công' : 'Cập nhật sản phẩm thất bại'; //update record
 
         return redirect()->route('admin.product.list')->with('msg', $check);
     }

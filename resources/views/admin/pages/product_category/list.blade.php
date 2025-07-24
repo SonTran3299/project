@@ -4,13 +4,6 @@
     <div class="col-md-12">
         <div class="card card-secondary">
             <div class="card-header">
-                <h3>
-                    @if (session('msg'))
-                        <div class="alert alert-success">
-                            {{ session('msg') }}
-                        </div>
-                    @endif
-                </h3>
                 <h3 class="card-title">Danh sách danh mục sản phẩm</h3>
             </div>
             {{-- Search --}}
@@ -65,7 +58,7 @@
                                         method="post" class="d-inline">
                                         @csrf
                                         <button class="btn btn-outline-danger" type="submit"
-                                            onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></button>
+                                            onclick="return confirm('Bạn có chắc muốn xóa danh mục này không?')"><i class="fa fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
@@ -79,4 +72,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('my-js')
+    @include('admin.blocks.notification')
 @endsection

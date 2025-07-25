@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         ProductCategoryFactory::customCategoryName();    
         User::factory(5)->create();
         User::factory()->admin()->create();   
-        Product::factory(20)->create();
+        Product::factory(25)->create();
         
         //Shipper::factory(5)->create();
         //ProductImage::factory(5)->create();

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('google_user_id')->nullable();
             $table->date('dob')->nullable();
+            $table->string('address')->nullable();
             $table->boolean('role')->default(0);
             $table->timestamps();
         });

@@ -23,8 +23,10 @@
     <link href="{{ asset('client_asset/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    {{-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> --}}
     <link href="{{ asset('client_asset/css/style.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+    @yield('custom-style')
 </head>
 
 <body>
@@ -65,8 +67,9 @@
 
     <script>
         const cartCountUrl = "{{ route('client.cart-count') }}";
+
         function updateCartCount() {
-            fetch(cartCountUrl) 
+            fetch(cartCountUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok ' + response.statusText);

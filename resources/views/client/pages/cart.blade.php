@@ -37,41 +37,6 @@
                         </thead>
                         <tbody class="align-middle">
                             @php $totalPrice = 0 @endphp
-                            {{-- @foreach ($cart as $data)
-                            <tr class="update-total-price">
-                                <td class="align-middle"><img src="" alt="" style="width: 50px;">
-                                    {{ $data['name'] }}
-                                </td>
-                                <td class="align-middle">
-                                    {{ Number::currency($data['price']) }} 
-                                </td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus" type="submit" name="minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" name="product_quantity"
-                                            class="form-control form-control-sm bg-secondary text-center quantity-input"
-                                            value="{{ $data['quantity'] }}">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus" type="submit" name="plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                @php
-                                    $total = $data['quantity'] * $data['price'];
-                                    $totalPrice += $total;
-                                @endphp
-                                <td class="align-middle">{{ Number::currency($total) }}</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i
-                                            class="fa fa-times"></i></button></td>
-                            </tr>
-                        @endforeach --}}
-
                             @foreach ($cart as $data)
                                 <tr class="update-total-price">
                                     <td class="align-middle"><img src="" alt="" style="width: 50px;">
@@ -146,7 +111,7 @@
                                 @if ($totalPrice > 2000000)
                                     @php $shippingFee = 0 @endphp
                                 @else
-                                    @php $shippingFee = 100000 @endphp
+                                    @php $shippingFee = 10000 @endphp
                                 @endif
                                 <h6 class="font-weight-medium" id="shipping-fee">
                                     {{ Number::currency($shippingFee) }}
@@ -160,7 +125,8 @@
                                     {{ Number::currency($totalPrice + $shippingFee) }}
                                 </h5>
                             </div>
-                            <button class="btn btn-block btn-primary my-3 py-3">Thanh toán</button>
+                            <a href="{{ route('client.checkout') }}" class="btn btn-block btn-primary my-3 py-3">Thanh
+                                toán</a>
                         </div>
                     </div>
                 </div>

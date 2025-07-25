@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
@@ -43,12 +45,6 @@ class ClientController extends Controller
         }
         $dataProduct = $query->paginate($itemPerPage);
 
-        // if (!$searchQuery) {
-        //     $dataProduct = Product::orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
-        // } else {
-        //     $dataProduct = Product::where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->whereBetween('price', [$minPrice, $maxPrice])->paginate($itemPerPage);
-        // }
-
         return view('client.pages.shop', ['dataProduct' => $dataProduct]);
     }
 
@@ -62,7 +58,10 @@ class ClientController extends Controller
         return view('client.pages.contact');
     }
 
-    // public function shopWithCategory(){
-    //     return view('client.pages.shop-with-category', ['dataProduct' => $dataProduct, 'dataCategory' => $this->loadCategory()]);
-    // }
+    public function orderHistory()
+    {
+        $userId = Auth::user()->id;
+        $dataOrder = Order::where('user_id', $userId)->with('orderItems', 'orderPaymentMethods')->get();
+        return view('client.pages.order_history', ['dataOrder' => $dataOrder]);
+    }
 }

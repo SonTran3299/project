@@ -27,9 +27,11 @@ Route::prefix('')
 
         Route::get('contact', 'contact')->name('contact');
 
-        Route::get('login', 'login')->name('login');
+        //Route::get('login', 'login')->name('login');
 
-        Route::get('register', 'register')->name('register');
+        //Route::get('register', 'register')->name('register');
+
+        Route::get('order-history', 'orderHistory')->name('order-history');
 
         Route::get('detail/{product}', 'detail')->name('detail');
     });

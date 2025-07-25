@@ -3,13 +3,12 @@
         <div class="col-lg-3 d-none d-lg-block">
             <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
                 data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
-                <h6 class="m-0">Categories</h6>
+                <h6 class="m-0">Danh mục sản phẩm</h6>
                 <i class="fa fa-angle-down text-dark"></i>
             </a>
             @yield('nav-homepage')
             @yield('nav-other-pages')
         </div>
-
 
         <div class="col-lg-9">
             <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
@@ -21,13 +20,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-
-                    {{-- @yield('navbar') --}}
                     <div class="navbar-nav mr-auto py-0">
                         <a href="{{ route('client.home') }}"
-                            class="nav-item nav-link {{ Request::routeIs('client.home') ? 'active' : '' }}">Home</a>
+                            class="nav-item nav-link {{ Request::routeIs('client.home') ? 'active' : '' }}">Trang chủ</a>
                         <a href="{{ route('client.shop') }}"
-                            class="nav-item nav-link {{ Request::routeIs('client.shop') ? 'active' : '' }}">Shop</a>
+                            class="nav-item nav-link {{ Request::routeIs('client.shop') ? 'active' : '' }}">Cửa hàng</a>
                         <div class="nav-item dropdown">
                             <a href="#"
                                 class="nav-link dropdown-toggle {{ Request::routeIs('client.cart') ? 'active' : '' }}"
@@ -38,9 +35,8 @@
                             </div>
                         </div>
                         <a href="{{ route('client.contact') }}"
-                            class="nav-item nav-link {{ Request::routeIs('client.contact') ? 'active' : '' }}">Contact</a>
+                            class="nav-item nav-link {{ Request::routeIs('client.contact') ? 'active' : '' }}">Liên hệ</a>
                     </div>
-                    {{-- -------------------- --}}
 
                     <div class="navbar-nav ml-auto py-0">
                         @auth
@@ -50,18 +46,18 @@
                                 <div class="dropdown-menu rounded-0 m-0">
                                     @if (Auth::user()->role)
                                         <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
-                                            Admin Dashboard
+                                            Dành cho Admin
                                         </a>
                                     @endif
                                     <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                                        Profile
+                                        Hồ sơ người dùng
                                     </a>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button class="dropdown-item" href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                             this.closest('form').submit();">
-                                            {{ __('Log Out') }}
+                                            {{ __('Đăng xuất') }}
                                         </button>
                                     </form>
                                 </div>
@@ -73,7 +69,6 @@
                     </div>
                 </div>
             </nav>
-
 
             @yield('header-carousel')
         </div>

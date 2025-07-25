@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('product');
             $table->float('price', 2);
             $table->string('name');
+            $table->string('main-image')->nullable();
             $table->integer('quantity');
             $table->timestamps();
         });

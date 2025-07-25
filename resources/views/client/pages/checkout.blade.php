@@ -5,21 +5,6 @@
         @include('client.blocks.side-bar')
     </nav>
 @endsection
-@section('navbar')
-    <div class="navbar-nav mr-auto py-0">
-        <a href="index.html" class="nav-item nav-link">Home</a>
-        <a href="shop.html" class="nav-item nav-link">Shop</a>
-        <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
-        <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
-            <div class="dropdown-menu rounded-0 m-0">
-                <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                <a href="checkout.html" class="dropdown-item">Checkout</a>
-            </div>
-        </div>
-        <a href="contact.html" class="nav-item nav-link">Contact</a>
-    </div>
-@endsection
 
 @section('page-header')
     <div class="container-fluid bg-secondary mb-5">
@@ -94,13 +79,18 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Phí giao hàng</h6>
-                                <h6 class="font-weight-medium">$10</h6>
+                                @if ($totalPrice > 2000000)
+                                    @php $shippingFee = 0 @endphp
+                                @else
+                                    @php $shippingFee = 10000 @endphp
+                                @endif
+                                <h6 class="font-weight-medium">{{ $shippingFee }}</h6>
                             </div>
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Tổng cộng</h5>
-                                <h5 class="font-weight-bold">{{ Number::currency($priceTotal) }}</h5>
+                                <h5 class="font-weight-bold">{{ Number::currency($priceTotal + $shippingFee) }}</h5>
                             </div>
                         </div>
                     </div>
@@ -123,17 +113,16 @@
                                     <label class="custom-control-label" for="vnpay">VNPAY</label>
                                 </div>
                             </div>
-                            <div class="">
+                            {{-- <div class="">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" name="payment_method"
                                         id="banktransfer" value="banktransfer">
                                     <label class="custom-control-label" for="banktransfer">Chuyển khoản ngân hàng</label>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
-                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place
-                                Order</button>
+                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Đặt hàng</button>
                         </div>
                     </div>
                 </div>

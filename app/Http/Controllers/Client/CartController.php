@@ -72,7 +72,6 @@ class CartController extends ClientController
         $userId = $user->id;
         $cart = Cart::where('user_id', $userId)->with('product')->get();
 
-
         return view('client.pages.checkout', [
             'user' => $user,
             'cart' => $cart
@@ -107,6 +106,7 @@ class CartController extends ClientController
                 $orderItem->price = $item->product->price;
                 $orderItem->name = $item->product->name;
                 $orderItem->quantity = $item->quantity;
+                $orderItem->main_image = $item->main_image;
                 $orderItem->save();
             }
 

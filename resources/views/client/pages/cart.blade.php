@@ -12,7 +12,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Giỏ hàng</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Trang chủ</a></p>
+                <p class="m-0"><a href="{{ route('client.home') }}">Trang chủ</a></p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Giỏ hàng</p>
             </div>
@@ -104,17 +104,13 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Tổng</h6>
-                                <h6 class="font-weight-medium cart-subtotal">{{ Number::currency($totalPrice) }}</h6>
+                                <h6 class="font-weight-medium cart-subtotal">
+                                    {{ Number::currency($caculatePrice['subtotal']) }}</h6>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Phí vận chuyển</h6>
-                                @if ($totalPrice > 2000000)
-                                    @php $shippingFee = 0 @endphp
-                                @else
-                                    @php $shippingFee = 10000 @endphp
-                                @endif
                                 <h6 class="font-weight-medium" id="shipping-fee">
-                                    {{ Number::currency($shippingFee) }}
+                                    {{ Number::currency($caculatePrice['shippingFee']) }}
                                 </h6>
                             </div>
                         </div>
@@ -122,11 +118,12 @@
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Tổng cộng</h5>
                                 <h5 class="font-weight-bold" id="final-price">
-                                    {{ Number::currency($totalPrice + $shippingFee) }}
+                                    {{ Number::currency($caculatePrice['total']) }}
                                 </h5>
                             </div>
-                            <a href="{{ route('client.checkout') }}" class="btn btn-block btn-primary my-3 py-3">Thanh
-                                toán</a>
+                            <a href="{{ route('client.checkout') }}" class="btn btn-block btn-primary my-3 py-3">
+                                Thanh toán
+                            </a>
                         </div>
                     </div>
                 </div>

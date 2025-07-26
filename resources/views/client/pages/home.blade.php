@@ -169,7 +169,6 @@
     </div>
     <!----------------------->
 
-
     <!-- Subscribe Start -->
     <div class="container-fluid bg-secondary my-5">
         <div class="row justify-content-md-center py-5 px-xl-5">
@@ -191,7 +190,6 @@
         </div>
     </div>
     <!-- Subscribe End -->
-
 
     <!-- Sản phẩm mới -->
     <div class="container-fluid pt-5">

@@ -11,13 +11,6 @@ class Product extends Model
    
     protected $table = 'product';
 
-    // protected $fillable = [
-    //     'name',
-    //     'status',
-    //     'created_at',
-    //     'updated_at'
-    // ];
-
     public $guarded = [];
 
     public function productCategory(){

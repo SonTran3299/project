@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Cart;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,9 +23,9 @@ class ClientViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) { 
-            
-            $view->with('categoryList', DB::table('product_category')->orderBy('name', 'asc')->get());
+        View::composer('*', function ($view) {
+            $view->with('categoryList', ProductCategory::orderBy('name', 'asc')->get());
+            $view->with('cartCount', Cart::where('user_id', Auth::id())->count());
         });
     }
 }

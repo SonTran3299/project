@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
-    // public function loadCategory()
-    // {
-    //     return DB::table('product_category')->orderBy('name', 'asc')->get();
-    // }
-
     public function shop(Request $request)
     {
         $categoryId = $request->query('category-filter') ?? null;

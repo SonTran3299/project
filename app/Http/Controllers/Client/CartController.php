@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Client\CartUpdateRequest;
-use App\Mail\AdminEmailTemplate;
 use App\Mail\CustomerEmailTemplate;
 use App\Models\Cart;
 use App\Models\Order;
@@ -20,12 +17,32 @@ use Illuminate\Support\Facades\Mail;
 
 class CartController extends ClientController
 {
+    public function caculateTotalOrder(int|string $userId, mixed $carts, int $freeShippingPrice, int $shippingPrice)
+    {
+        $total = 0;
+        $subtotal = 0;
+        $shippingFee = 0;
+        foreach ($carts as $cart) {
+            $subtotal += $cart->product->price * $cart->quantity;
+        }
+        if ($subtotal < $freeShippingPrice) {
+            $shippingFee = $shippingPrice;
+        }
+        $total = $subtotal + $shippingFee;
+
+        return [
+            'total' => $total,
+            'subtotal' => $subtotal,
+            'shippingFee' => $shippingFee,
+        ];
+    }
+
     public function index()
     {
         $userId = Auth::id();
-
         $cart = Cart::with('product')->where('user_id', $userId)->get();
-        return view('client.pages.cart', ['cart' => $cart]);
+        $caculatePrice = $this->caculateTotalOrder($userId, $cart, 500000, 15000);
+        return view('client.pages.cart', ['cart' => $cart, 'caculatePrice' => $caculatePrice]);
     }
 
     public function addToCart(Product $product)
@@ -42,7 +59,6 @@ class CartController extends ClientController
 
         $userId = Auth::id();
         $sessionCart = session()->get('cart', []);
-
         foreach ($sessionCart as $productId => $item) {
             $quantity = $item['quantity'];
 
@@ -58,6 +74,7 @@ class CartController extends ClientController
                     'user_id' => $userId,
                     'product_id' => $productId,
                     'quantity' => $quantity,
+                    'main_image' => $item['main_image']
                 ]);
             }
         }
@@ -70,11 +87,14 @@ class CartController extends ClientController
     {
         $user = Auth::user();
         $userId = $user->id;
+
         $cart = Cart::where('user_id', $userId)->with('product')->get();
+        $caculatePrice = $this->caculateTotalOrder($userId, $cart, 500000, 15000);
 
         return view('client.pages.checkout', [
             'user' => $user,
-            'cart' => $cart
+            'cart' => $cart,
+            'caculatePrice' => $caculatePrice
         ]);
     }
 
@@ -83,20 +103,28 @@ class CartController extends ClientController
         try {
             DB::beginTransaction();
             $total = 0;
+            $subtotal = 0;
+            $shippingFee = 0;
             $userId = Auth::user()->id;
             $cart = Cart::where('user_id', $userId)->with('product')->get();
 
-            foreach ($cart as $item) {
-                $total += $item->product->price * $item->quantity;
-            }
+            // foreach ($cart as $item) {
+            //     $subtotal += $item->product->price * $item->quantity;
+            // }
+            // if ($subtotal < 500000) {
+            //     $shippingFee = 15000;
+            // }
+            // $total = $subtotal + $shippingFee;
+            $caculatePrice = $this->caculateTotalOrder($userId, $cart, 500000, 15000);
 
             $order = new Order();
             $order->user_id = $userId;
             $order->address = $request->address;
             $order->note = $request->note;
             $order->status = 'pending';
-            $order->subtotal = $total;
-            $order->total = $total;
+            $order->subtotal = $caculatePrice['subtotal'];
+            $order->shipping_fee = $caculatePrice['shippingFee'];
+            $order->total = $caculatePrice['total'];
             $order->save(); //insert
 
             foreach ($cart as $item) {
@@ -113,13 +141,14 @@ class CartController extends ClientController
             $orderPaymentMethod = OrderPaymentMethod::create([
                 'order_id' => $order->id,
                 'payment_method' => $request->payment_method,
-                'total' => $total,
+                'total' => $caculatePrice['total'],
                 'status' => 'pending',
             ]);
 
-            //Update phone of user
+            //Update phone and address of user
             $user = User::find($userId);
             $user->phone = $request->phone;
+            $user->address = $request->address;
             $user->save();
 
             DB::commit();
@@ -202,7 +231,7 @@ class CartController extends ClientController
 
     public function cartCount()
     {
-        $cartCount = Cart::where('user_id', Auth::id())->sum('quantity');
+        $cartCount = Cart::where('user_id', Auth::id())->count('product_id');
 
         return response()->json(['count' => $cartCount]);
     }

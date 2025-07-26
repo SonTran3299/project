@@ -9,9 +9,9 @@
 @section('page-header')
     <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Checkout</h1>
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Tiến hành thanh toán</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="{{ route('client.home') }}">Trang chủ</a></p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Checkout</p>
             </div>
@@ -39,12 +39,12 @@
 
                         <div class="col-md-12 form-group">
                             <label>Số điện thoại</label>
-                            <input class="form-control" type="text" name="phone" value="{{ $user->phone }}">
+                            <input class="form-control" type="text" name="phone" value="{{ $user->phone }}" required>
                         </div>
 
                         <div class="col-md-12 form-group">
                             <label>Địa chỉ </label>
-                            <input class="form-control" type="text" name="address" required>
+                            <input class="form-control" type="text" name="address" value="{{ $user->address }}" required>
                         </div>
                         <div class="col-md-12 form-group">
                             <label>Ghi chú đơn hàng </label>
@@ -60,37 +60,29 @@
                         </div>
                         <div class="card-body">
                             <h5 class="font-weight-medium mb-3">Sản phẩm</h5>
-                            @php $priceTotal = 0 @endphp
                             @foreach ($cart as $data)
                                 <div class="d-flex justify-content-between">
                                     <p>{{ $data->product->name }}</p>
-                                    @php
-                                        $price = $data->product->price * $data->quantity;
-                                        $priceTotal += $price;
-                                    @endphp
-                                    <p>{{ Number::currency($price) }}</p>
+                                    <p>{{ Number::currency($data->product->price) }}</p>
+                                    <p>x</p>
+                                    <p>{{ $data->quantity }}</p>
                                 </div>
                             @endforeach
 
                             <hr class="mt-0">
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Tạm tính</h6>
-                                <h6 class="font-weight-medium">{{ Number::currency($priceTotal) }}</h6>
+                                <h6 class="font-weight-medium">{{ Number::currency($caculatePrice['subtotal']) }}</h6>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Phí giao hàng</h6>
-                                @if ($totalPrice > 2000000)
-                                    @php $shippingFee = 0 @endphp
-                                @else
-                                    @php $shippingFee = 10000 @endphp
-                                @endif
-                                <h6 class="font-weight-medium">{{ $shippingFee }}</h6>
+                                <h6 class="font-weight-medium">{{ Number::currency($caculatePrice['shippingFee']) }}</h6>
                             </div>
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Tổng cộng</h5>
-                                <h5 class="font-weight-bold">{{ Number::currency($priceTotal + $shippingFee) }}</h5>
+                                <h5 class="font-weight-bold">{{ Number::currency($caculatePrice['total']) }}</h5>
                             </div>
                         </div>
                     </div>

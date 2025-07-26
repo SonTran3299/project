@@ -12,7 +12,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Lịch sử đơn hàng</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="{{ route('client.home') }}">Trang chủ</a></p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Lịch sử đơn hàng</p>
             </div>
@@ -44,9 +44,6 @@
                         </h2>
                     </div>
                     <div id="collapseControl{{ $loop->iteration }}" class="collapse" aria-labelledby="heading2">
-                        {{-- @php
-                            dd($order->orderItems)
-                        @endphp --}}
                         @foreach ($order->orderItems as $orderItem)
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
@@ -77,7 +74,7 @@
                                 </div>
                                 <div>
                                     <span>Phí giao hàng: </span>
-                                    <span>{{ 'Chưa' }}</span>
+                                    <span>{{ Number::currency($order->shipping_fee) }}</span>
                                 </div>
                                 <div>
                                     <span>Tổng cộng: </span>
@@ -88,7 +85,6 @@
                     </div>
                 </div>
             @endforeach
-
         </div>
     </div>
 @endsection

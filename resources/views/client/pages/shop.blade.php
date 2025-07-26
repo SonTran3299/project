@@ -12,9 +12,9 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Danh sách sản phẩm</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="{{ route('client.home') }}">Trang chủ</a></p>
                 <p class="m-0 px-2">-</p>
-                <p class="m-0">Shop</p>
+                <p class="m-0">Cửa hàng</p>
             </div>
         </div>
     </div>
@@ -25,9 +25,7 @@
         <div class="row px-xl-5">
             <!-- Shop Sidebar Start -->
             <div class="col-lg-3 col-md-12">
-                <!-- Price Start -->
                 <div class="border-bottom mb-4 pb-4">
-
                     <form action="{{ route('client.shop') }}" method="GET" id="price-filter-form">
                         <h5 class="font-weight-semi-bold mb-4">Lọc theo giá</h5>
                         <div class="form-row">
@@ -43,10 +41,8 @@
                         <button type="submit" class="btn btn-success w-100 mt-1">Áp dụng</button>
                     </form>
                 </div>
-                <!-- Price End -->
             </div>
             <!-- Shop Sidebar End -->
-
 
             <!-- Shop Product Start -->
             <div class="col-lg-9 col-md-12">
@@ -112,7 +108,6 @@
                         </div>
                     @endforeach
 
-                    {{-- Pagination --}}
                     <div class="col-12 pb-1">
                         <nav aria-label="Page navigation">
                             {{ $dataProduct->withQueryString()->links() }}
@@ -191,7 +186,6 @@
                 // Nhấn enter gửi form
                 const searchInput = searchForm.querySelector('input[name="query"]');
                 if (searchInput) {
-                    // Dùng 'keyup' thay vì 'up'
                     searchInput.addEventListener('keyup', function(e) {
                         if (e.key === 'Enter') {
                             e.preventDefault();

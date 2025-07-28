@@ -87,9 +87,14 @@
                         @else
                             0 Sản phẩm
                         @endif
-                        <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                            <img class="img-fluid" src="{{ asset('client_asset/img/cat-demo.png') }}" alt="">
-                        </a>
+                        <form action="{{ route('client.shop') }}" method="get">
+                            <button type="submit" class="btn cat-img position-relative overflow-hidden mb-3">
+                                <input type="hidden" name="category" value="{{ $data->slug }}">
+                                <img class="img-fluid"
+                                    src="{{ $data->image !== null ? asset("images/category/$data->image") : asset('client_asset/img/cat-demo.png') }}"
+                                    alt="">
+                            </button>
+                        </form>
                         <h5 class="font-weight-semi-bold m-0">{{ Str::title($data->name) }}</h5>
                     </div>
                 </div>
@@ -128,7 +133,7 @@
     <!-- Sản phẩm nổi bật -->
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">Sản phẩm nổi bật</span></h2>
+            <h2 class="section-title px-5"><span class="px-2">Sản phẩm ưu đãi</span></h2>
         </div>
         <div class="row px-xl-5 pb-3">
             @foreach ($outstandingProducts as $data)
@@ -155,13 +160,7 @@
                                 <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
                             </div>
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <button class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-                                Detail</button>
-                            <button data-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
-                                class="btn btn-sm text-dark p-0 add-product-to-cart"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Thêm</button>
-                        </div>
+                        @include('client.blocks.product-button', ['id' => $data->id])
                     </div>
                 </div>
             @endforeach
@@ -222,14 +221,7 @@
                                 <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
                             </div>
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <button class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-                                Detail</button>
-                            <button data-product="{{ $data->id }}"
-                                data-url="{{ route('client.add-item-to-cart', ['product' => $data->id]) }}"
-                                class="btn btn-sm text-dark p-0 add-product-to-cart"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Thêm</button>
-                        </div>
+                        @include('client.blocks.product-button', ['id' => $data->id])
                     </div>
                 </div>
             @endforeach
@@ -273,31 +265,5 @@
     </div>
 @endsection
 @section('my-js')
-    <script>
-        $(document).ready(function() {
-            $('.add-product-to-cart').on('click', function(e) {
-                e.preventDefault();
-
-                var url = $(this).data('url');
-                var productId = $(this).data('product');
-                $.ajax({
-                    method: "POST",
-                    url: url,
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        product_id: productId
-                    },
-                    success: function(response) {
-                        updateCartCount();
-                        $('.toast').toast('show');
-                    },
-                    statusCode: {
-                        401: function() {
-                            window.location.href = "{{ route('login') }}";
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="{{ asset('client_asset/js/addToCart.js') }}"></script>
 @endsection

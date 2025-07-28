@@ -8,17 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-   
+
     protected $table = 'product';
 
     public $guarded = [];
 
-    public function productCategory(){
+    public function productCategory()
+    {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
-    public function carts()
+    public function images()
     {
-        return $this->hasMany(Cart::class);
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'product_id');
     }
 }

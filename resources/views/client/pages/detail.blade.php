@@ -28,24 +28,29 @@
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border">
                         <div class="carousel-item active">
-                            <img class="w-100 h-100" src="{{ asset('client_asset/img/product-1.jpg') }}" alt="Image">
+                            <img class="w-100 h-100" src="{{ asset("images/product/main_image/$data->main_image") }}"
+                                alt="Image">
                         </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="{{ asset('client_asset/img/product-2.jpg') }}" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="{{ asset('client_asset/img/product-3.jpg') }}" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="{{ asset('client_asset/img/product-4.jpg') }}" alt="Image">
-                        </div>
+                        @php
+                            $totalImages = 1 + $productImages->count();
+                        @endphp
+                        @if ($productImages->isNotEmpty())
+                            @foreach ($productImages as $image)
+                                <div class="carousel-item">
+                                    <img class="w-100 h-100"
+                                        src="{{ asset('images/product/product_image/' . $image->image) }}" alt="Image">
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
-                    <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
-                        <i class="fa fa-2x fa-angle-left text-dark"></i>
-                    </a>
-                    <a class="carousel-control-next" href="#product-carousel" data-slide="next">
-                        <i class="fa fa-2x fa-angle-right text-dark"></i>
-                    </a>
+                    @if ($totalImages > 1)
+                        <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                            <i class="fa fa-2x fa-angle-left text-dark"></i>
+                        </a>
+                        <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                            <i class="fa fa-2x fa-angle-right text-dark"></i>
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -68,9 +73,6 @@
                     <span class="h3 text-danger font-weight-bold mr-2">{{ Number::currency($reducePrice) }}</span>
                     <span class="font-weight-semi-bold"><del>{{ Number::currency($data->price) }}</del></span>
                 </div>
-
-                <p class="mb-4">{!! $data->description !!}
-                </p>
                 {{-- size --}}
                 {{-- <div class="d-flex mb-3">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
@@ -123,24 +125,28 @@
                         </div>
                     </form>
                 </div> --}}
-                <div class="d-flex align-items-center mb-4 pt-2">
-                    <div class="input-group quantity mr-3" style="width: 130px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-primary btn-minus">
-                                <i class="fa fa-minus"></i>
-                            </button>
+                <form action="{{ route('client.add-to-cart-from-detail', ['product' => $data->id]) }}" method="post">
+                    @csrf
+                    <div class="d-flex align-items-center mb-4 pt-2">
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control bg-secondary text-center" name="quantity"
+                                value="1">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-plus">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
-                        <input type="text" class="form-control bg-secondary text-center" value="1">
-                        <div class="input-group-btn">
-                            <button class="btn btn-primary btn-plus">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i>
+                            Thêm vào giỏ
+                        </button>
                     </div>
-                    <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i>
-                        Add To Cart
-                    </button>
-                </div>
+                </form>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
                     <div class="d-inline-flex">
@@ -164,53 +170,19 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
-                    <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>
-                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                    <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Chi tiết sản phẩm</a>
+                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Mô tả sản phẩm</a>
+                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Đánh giá (0)</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
-                        <h4 class="mb-3">Product Description</h4>
+                        <h4 class="mb-3">Chi tiết sản phẩm</h4>
                         {!! $data->description !!}
                     </div>
 
                     <div class="tab-pane fade" id="tab-pane-2">
-                        <h4 class="mb-3">Additional Information</h4>
+                        <h4 class="mb-3">Mô tả sản phẩm</h4>
                         {{ $data->description }}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        1
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        2
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        3
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        4
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     </div>
                     {{-- Comment --}}
                     <div class="tab-pane fade" id="tab-pane-3">
@@ -218,10 +190,10 @@
                             <div class="col-md-6">
                                 <h4 class="mb-4">1 review for "{{ $data->name }}"</h4>
                                 <div class="media mb-4">
-                                    <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1"
-                                        style="width: 45px;">
+                                    <img src="{{ asset('client_asset/img/user.jpg') }}" alt="Image"
+                                        class="img-fluid mr-3 mt-1" style="width: 45px;">
                                     <div class="media-body">
-                                        <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
+                                        <h6>John Doe<small> - <i>01 Jun 2025</i></small></h6>
                                         <div class="text-primary mb-2">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -233,12 +205,29 @@
                                             at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
                                 </div>
+                                @foreach ($comments as $comment)
+                                    <div class="media mb-4">
+                                        <img src="{{ asset('client_asset/img/user.jpg') }}" alt="Image"
+                                            class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                        <div class="media-body">
+                                            <h6>{{ $comment->user->name }}<small> -
+                                                    <i>{{ $comment->updated_at }}</i></small></h6>
+                                            <div class="text-primary mb-2">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                            <p>{{ $comment->comment }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                             <div class="col-md-6">
-                                <h4 class="mb-4">Leave a review</h4>
-                                <small>Your email address will not be published. Required fields are marked *</small>
+                                <h4 class="mb-4">Đánh giá sản phẩm</h4>
                                 <div class="d-flex my-3">
-                                    <p class="mb-0 mr-2">Your Rating * :</p>
+                                    <p class="mb-0 mr-2">Chất lượng sản phẩm :</p>
                                     <div class="text-primary">
                                         <i class="far fa-star"></i>
                                         <i class="far fa-star"></i>
@@ -247,21 +236,16 @@
                                         <i class="far fa-star"></i>
                                     </div>
                                 </div>
-                                <form>
+                                <form action="{{ route('client.comment', ['product' => $data->id]) }}" method="post">
+                                    @csrf
                                     <div class="form-group">
-                                        <label for="message">Your Review *</label>
-                                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="name">Your Name *</label>
-                                        <input type="text" class="form-control" id="name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Your Email *</label>
-                                        <input type="email" class="form-control" id="email">
+                                        <label for="message">Chia sẻ ý kiến của bạn</label>
+                                        <textarea id="message" cols="30" rows="5" class="form-control" style="resize: none;" name="comment"></textarea>
                                     </div>
                                     <div class="form-group mb-0">
-                                        <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
+                                        <button type="submit" value="Leave Your Review" class="btn btn-primary px-3">
+                                            Gửi
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -273,7 +257,6 @@
     </div>
     <!-- Shop Detail End -->
 
-
     <!-- Giới thiệu thêm -->
     <div class="container-fluid py-5">
         <div class="text-center mb-4">
@@ -282,99 +265,39 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-1.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                    @foreach ($products as $product)
+                        <div class="card product-item border-0">
+                            <div
+                                class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <img class="img-fluid w-100"
+                                    src="{{ asset('images/product/main_image/' . $product->main_image) }}"
+                                    alt="">
+                                @if ($product->discount_percentage > 0)
+                                    <span class="badge badge-danger position-absolute mt-2 mr-2"
+                                        style="top: 0; right: 0; z-index: 10;">
+                                        {{ round($product->discount_percentage * 100) }}%
+                                    </span>
+                                @endif
                             </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-2.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3">{{ $product->name }}</h6>
+                                <div class="d-flex justify-content-center">
+                                    @php
+                                        $reducePrice = $product->price * (1 - $product->discount_percentage);
+                                    @endphp
+                                    <h6>{{ Number::currency($reducePrice) }}</h6>
+                                    <h6 class="text-muted ml-2"><del>{{ Number::currency($product->price) }}</del></h6>
+                                </div>
                             </div>
+                            @include('client.blocks.product-button', ['id' => $product->id])
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-3.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-4.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-5.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
     <!-- Products End -->
+@endsection
+@section('my-js')
+    <script src="{{ asset('client_asset/js/addToCart.js') }}"></script>
 @endsection

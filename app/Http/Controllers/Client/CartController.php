@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Mail\CustomerEmailTemplate;
 use App\Models\Cart;
 use App\Models\Order;
@@ -15,9 +16,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-class CartController extends ClientController
+class CartController extends Controller
 {
-    public function caculateTotalOrder(int|string $userId, mixed $carts, int $freeShippingPrice, int $shippingPrice)
+    public function caculateTotalOrder($carts, int $freeShippingPrice, int $shippingPrice)
     {
         $total = 0;
         $subtotal = 0;
@@ -41,7 +42,7 @@ class CartController extends ClientController
     {
         $userId = Auth::id();
         $cart = Cart::with('product')->where('user_id', $userId)->get();
-        $caculatePrice = $this->caculateTotalOrder($userId, $cart, 500000, 15000);
+        $caculatePrice = $this->caculateTotalOrder($cart, 500000, 15000);
         return view('client.pages.cart', ['cart' => $cart, 'caculatePrice' => $caculatePrice]);
     }
 
@@ -57,42 +58,29 @@ class CartController extends ClientController
 
         session()->put('cart', $cart);
 
-        $userId = Auth::id();
         $sessionCart = session()->get('cart', []);
         foreach ($sessionCart as $productId => $item) {
             $quantity = $item['quantity'];
 
-            $cartItem = Cart::where('user_id', $userId)
-                ->where('product_id', $productId)
-                ->first();
-
-            if ($cartItem) {
-                $cartItem->quantity += $quantity;
-                $cartItem->save();
-            } else {
-                Cart::create([
-                    'user_id' => $userId,
-                    'product_id' => $productId,
-                    'quantity' => $quantity,
-                    'main_image' => $item['main_image']
-                ]);
-            }
+            self::insertOrUpdateCart(Auth::id(), $productId, $quantity, $item['main_image']);
         }
         session()->put('cart', []);
 
         return response()->json(['message' => 'Thêm thành công']);
     }
 
+    public function addToCartFromDetail(Product $product, Request $request)
+    {
+        self::insertOrUpdateCart(Auth::id(), $product->id, $request->quantity, $product->main_image);
+        return redirect()->route('client.cart');
+    }
     public function checkout()
     {
-        $user = Auth::user();
-        $userId = $user->id;
-
-        $cart = Cart::where('user_id', $userId)->with('product')->get();
-        $caculatePrice = $this->caculateTotalOrder($userId, $cart, 500000, 15000);
+        $cart = Cart::where('user_id', Auth::id())->with('product')->get();
+        $caculatePrice = $this->caculateTotalOrder($cart, 500000, 15000);
 
         return view('client.pages.checkout', [
-            'user' => $user,
+            'user' => Auth::user(),
             'cart' => $cart,
             'caculatePrice' => $caculatePrice
         ]);
@@ -102,20 +90,10 @@ class CartController extends ClientController
     {
         try {
             DB::beginTransaction();
-            $total = 0;
-            $subtotal = 0;
-            $shippingFee = 0;
-            $userId = Auth::user()->id;
+            $userId = Auth::id();
             $cart = Cart::where('user_id', $userId)->with('product')->get();
 
-            // foreach ($cart as $item) {
-            //     $subtotal += $item->product->price * $item->quantity;
-            // }
-            // if ($subtotal < 500000) {
-            //     $shippingFee = 15000;
-            // }
-            // $total = $subtotal + $shippingFee;
-            $caculatePrice = $this->caculateTotalOrder($userId, $cart, 500000, 15000);
+            $caculatePrice = $this->caculateTotalOrder($cart, 500000, 15000);
 
             $order = new Order();
             $order->user_id = $userId;
@@ -234,5 +212,24 @@ class CartController extends ClientController
         $cartCount = Cart::where('user_id', Auth::id())->count('product_id');
 
         return response()->json(['count' => $cartCount]);
+    }
+
+    public static function insertOrUpdateCart(int|string $userId, int|string $productId, int|string $quantity, string $image): void
+    {
+        $cartItem = Cart::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $quantity;
+            $cartItem->save();
+        } else {
+            Cart::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'quantity' => $quantity,
+                'main_image' => $image
+            ]);
+        }
     }
 }

@@ -55,14 +55,17 @@
                                     <select class="form-control mr-sm-2" name="sort" id="sort">
                                         <option {{ in_array(request()->get('sort'), ['latest', '']) ? 'selected' : '' }}
                                             value="latest">
-                                            Mới nhất</option>
+                                            Mới nhất
+                                        </option>
                                         <option {{ request()->get('sort') === 'oldest' ? 'selected' : '' }} value="oldest">
                                             Cũ nhất
                                         </option>
-
-                                        {{-- <option {{ in_array(request()->get('sort'), ['latest', '']) ? 'selected' : '' }}
-                                            value="latest">
-                                            Mua nhiều nhất</option> --}}
+                                        <option {{ request()->get('sort') === 'highest' ? 'selected' : '' }} value="highest">
+                                            Giá cao đến thấp
+                                        </option>
+                                        <option {{ request()->get('sort') === 'lowest' ? 'selected' : '' }} value="lowest">
+                                            Giá thấp đến cao
+                                        </option>
                                     </select>
                                 </div>
                             </form>
@@ -74,7 +77,8 @@
                             <div class="card product-item border-0 mb-4">
                                 <div
                                     class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                                    <img class="img-fluid w-100" src="{{ asset("images/product/main_image/$data->main_image") }}"
+                                    <img class="img-fluid w-100"
+                                        src="{{ asset("images/product/main_image/$data->main_image") }}"
                                         alt="{{ $data->name }}">
                                     @if ($data->discount_percentage > 0)
                                         <span class="badge badge-danger position-absolute mt-2 mr-2"
@@ -93,17 +97,7 @@
                                         <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
                                     </div>
                                 </div>
-                                <div class="card-footer d-flex justify-content-between bg-light border">
-                                    <a href="{{ route('client.detail', ['product' => $data->id]) }}"
-                                        class="btn btn-sm text-dark p-0">
-                                        <i class="fas fa-eye text-primary mr-1"></i>
-                                        Chi tiết
-                                    </a>
-                                    <button class="btn btn-sm text-dark p-0">
-                                        <i class="fas fa-shopping-cart text-primary mr-1"></i>
-                                        Thêm vào giỏ
-                                    </button>
-                                </div>
+                                @include('client.blocks.product-button', ['id' => $data->id])
                             </div>
                         </div>
                     @endforeach
@@ -116,6 +110,23 @@
                 </div>
             </div>
             <!-- Shop Product End -->
+        </div>
+    </div>
+
+    <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-end align-items-end"
+        style="min-height: 100px; position: fixed; bottom: 20px; right: 20px; z-index: 1;">
+        <div class="toast" role="alert" data-delay="3000">
+            <div class="toast-header">
+                {{-- <img src="..." class="rounded mr-2" alt="..."> --}}
+                <strong class="mr-auto">Thông báo</strong>
+                {{-- <small>11 mins ago</small> --}}
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                Thêm sản phẩm thành công
+            </div>
         </div>
     </div>
 @endsection
@@ -196,4 +207,5 @@
             }
         });
     </script>
+    <script src="{{ asset('client_asset/js/addToCart.js') }}"></script>
 @endsection

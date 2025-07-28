@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\ClientController;
+use App\Http\Controllers\Client\DetailController;
 use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\HomeController;
 use App\Mail\TestEmailTemplate;
@@ -27,13 +28,7 @@ Route::prefix('')
 
         Route::get('contact', 'contact')->name('contact');
 
-        //Route::get('login', 'login')->name('login');
-
-        //Route::get('register', 'register')->name('register');
-
         Route::get('order-history', 'orderHistory')->name('order-history');
-
-        Route::get('detail/{product}', 'detail')->name('detail');
     });
 
 Route::prefix('user')
@@ -43,10 +38,20 @@ Route::prefix('user')
     ->group(function () {
         Route::get('cart', 'index')->name('cart');
         Route::post('add-item-to-cart/{product}', 'addToCart')->name('add-item-to-cart');
+        Route::post('add-to-cart-from-detail/{product}', 'addToCartFromDetail')->name('add-to-cart-from-detail');
         Route::get('checkout', 'checkout')->name('checkout');
         Route::post('place-order', 'placeOrder')->name('place-order');
         Route::post('delete-product/{product}', 'deleteProductFromCart')->name('delete-product');
         Route::get('cart-count', 'cartCount')->name('cart-count');
+    });
+
+Route::prefix('')
+    ->controller(DetailController::class)
+    ->name('client.')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('detail/{product}', 'detail')->name('detail');
+        Route::post('leave-comment/{product}', 'comment')->name('comment');
     });
 
 Route::get('/', [HomeController::class, 'index'])->name('client.home');

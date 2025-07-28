@@ -22,7 +22,8 @@
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
                         <a href="{{ route('client.home') }}"
-                            class="nav-item nav-link {{ Request::routeIs('client.home') ? 'active' : '' }}">Trang chủ</a>
+                            class="nav-item nav-link {{ Request::routeIs('client.home') ? 'active' : '' }}">Trang
+                            chủ</a>
                         <a href="{{ route('client.shop') }}"
                             class="nav-item nav-link {{ Request::routeIs('client.shop') ? 'active' : '' }}">Cửa hàng</a>
                         <div class="nav-item dropdown">
@@ -35,7 +36,8 @@
                             </div>
                         </div>
                         <a href="{{ route('client.contact') }}"
-                            class="nav-item nav-link {{ Request::routeIs('client.contact') ? 'active' : '' }}">Liên hệ</a>
+                            class="nav-item nav-link {{ Request::routeIs('client.contact') ? 'active' : '' }}">Liên
+                            hệ</a>
                     </div>
 
                     <div class="navbar-nav ml-auto py-0">
@@ -48,10 +50,14 @@
                                         <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
                                             Dành cho Admin
                                         </a>
+                                    @else
+                                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                                            Hồ sơ người dùng
+                                        </a>
+                                        <a href="{{ route('client.order-history') }}" class="dropdown-item">
+                                            Lịch sử đơn hàng
+                                        </a>
                                     @endif
-                                    <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                                        Hồ sơ người dùng
-                                    </a>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button class="dropdown-item" href="{{ route('logout') }}"

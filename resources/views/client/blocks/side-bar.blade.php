@@ -12,7 +12,7 @@
         @foreach ($categoryList as $category)
             <form action="{{ route('client.shop') }}" method="get">
                 <button type="submit" class="btn text-left nav-item nav-link">
-                    <input type="hidden" name="category-filter" value="{{ $category->id }}">
+                    <input type="hidden" name="category" value="{{ $category->slug }}">
                     {{ Str::title($category->name) }}
                 </button>
             </form>

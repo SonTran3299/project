@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HomeController extends ClientController
+class HomeController extends Controller
 {
     public function index()
     {
         $newProduct = Product::orderBy('id',  'desc')->take(8)->get();
-        $outstandingProducts = Product::orderBy('id',  'asc')->take(8)->get();
+        $outstandingProducts = Product::orderBy('discount_percentage',  'desc')->take(8)->get();
         return view('client.pages.home', [
             'newProduct' => $newProduct,
             'outstandingProducts' => $outstandingProducts,

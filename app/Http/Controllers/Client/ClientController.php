@@ -14,7 +14,7 @@ class ClientController extends Controller
 {
     public function shop(Request $request)
     {
-        $categoryId = $request->query('category-filter') ?? null;
+        $categoryFilter = $request->query('category') ?? null;
         $searchQuery = $request->query('query') ?? null;
 
         $sort  = $request->sort ?? 'latest';
@@ -25,6 +25,10 @@ class ClientController extends Controller
 
         if ($sort === 'oldest') {
             $arraySort = ['id', 'asc'];
+        } else if ($sort === 'highest') {
+            $arraySort = ['price', 'desc'];
+        } else if ($sort === 'lowest') {
+            $arraySort = ['price', 'asc'];
         }
 
         [$column, $sort] = $arraySort;
@@ -32,8 +36,9 @@ class ClientController extends Controller
         $itemPerPage = config('my-config.client_product_per_page');
 
         $query = Product::orderBy($column, $sort)->whereBetween('price', [$minPrice, $maxPrice]);
-        if ($categoryId) {
-            $query->where('product_category_id', $categoryId);
+        if ($categoryFilter) {
+            $category = ProductCategory::where('slug', $categoryFilter)->first();
+            $query->where('product_category_id', $category->id);
         }
         if ($searchQuery) {
             $query->where('name', 'LIKE', "%$searchQuery%");
@@ -41,11 +46,6 @@ class ClientController extends Controller
         $dataProduct = $query->paginate($itemPerPage);
 
         return view('client.pages.shop', ['dataProduct' => $dataProduct]);
-    }
-
-    public function detail(Product $product)
-    {
-        return view('client.pages.detail', ['data' => $product]);
     }
 
     public function contact()

@@ -1,5 +1,27 @@
 @extends('client.layout.master')
+@section('custom-style')
+    <style>
+        .rating-stars i {
+            cursor: pointer;
+            font-size: 24px;
+            margin-right: 2px;
+            color: #ccc;
+            transition: color 0.2s;
+        }
 
+        /* Khi một sao được hover hoặc đã được chọn */
+        .rating-stars i.selected,
+        .rating-stars i:hover,
+        .rating-stars i.active,
+        .active-stars {
+            color: orange;
+        }
+
+        .rating-stars i:hover~i {
+            color: #ccc;
+        }
+    </style>
+@endsection
 @section('nav-other-pages')
     <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
         id="navbar-vertical" style="width: calc(100% - 30px); z-index: 1;">
@@ -58,13 +80,22 @@
                 <h3 class="font-weight-semi-bold">{{ $data->name }}</h3>
                 <div class="d-flex mb-3">
                     <div class="text-primary mr-2">
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star-half-alt"></small>
-                        <small class="far fa-star"></small>
+                        @php
+                            $fullStars = floor($averageRating);
+                            $halfStar = $averageRating - $fullStars >= 0.5 ? 1 : 0;
+                            $emptyStars = 5 - $fullStars - $halfStar;
+                        @endphp
+                        @for ($i = 0; $i < $fullStars; $i++)
+                            <small class="fas fa-star active-stars"></small>
+                        @endfor
+                        @if ($halfStar)
+                            <small class="fas fa-star-half-alt active-stars"></small>
+                        @endif
+                        @for ($i = 0; $i < $emptyStars; $i++)
+                            <small class="far fa-star"></small>
+                        @endfor
                     </div>
-                    <small class="pt-1">(50 Reviews)</small>
+                    <small class="pt-1">({{ 1 + $comments->count() }} đánh giá)</small>
                 </div>
                 <div class="mb-4">
                     @php
@@ -172,7 +203,8 @@
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
                     <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Chi tiết sản phẩm</a>
                     <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Mô tả sản phẩm</a>
-                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Đánh giá (0)</a>
+                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Đánh giá
+                        ({{ 1 + $comments->count() }})</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
@@ -188,14 +220,15 @@
                     <div class="tab-pane fade" id="tab-pane-3">
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-4">1 review for "{{ $data->name }}"</h4>
+                                <h4 class="mb-4">{{ 1 + $comments->count() }} đánh giá cho sản phẩm
+                                    "{{ $data->name }}"</h4>
                                 <div class="media mb-4">
-                                    <img src="{{ asset('client_asset/img/user.jpg') }}" alt="Image"
+                                    <img src="{{ asset('user_asset/images/user1.svg') }}" alt="Image"
                                         class="img-fluid mr-3 mt-1" style="width: 45px;">
                                     <div class="media-body">
                                         <h6>John Doe<small> - <i>01 Jun 2025</i></small></h6>
                                         <div class="text-primary mb-2">
-                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star "></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star-half-alt"></i>
@@ -211,13 +244,16 @@
                                             class="img-fluid mr-3 mt-1" style="width: 45px;">
                                         <div class="media-body">
                                             <h6>{{ $comment->user->name }}<small> -
-                                                    <i>{{ $comment->updated_at }}</i></small></h6>
+                                                    <i>{{ \Carbon\Carbon::parse($comment->updated_at)->format('d-m-Y') }}</i></small>
+                                            </h6>
                                             <div class="text-primary mb-2">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $comment->stars)
+                                                        <i class="fas fa-star active-stars"></i>
+                                                    @else
+                                                        <i class="far fa-star"></i>
+                                                    @endif
+                                                @endfor
                                             </div>
                                             <p>{{ $comment->comment }}</p>
                                         </div>
@@ -225,29 +261,36 @@
                                 @endforeach
                             </div>
                             <div class="col-md-6">
-                                <h4 class="mb-4">Đánh giá sản phẩm</h4>
-                                <div class="d-flex my-3">
-                                    <p class="mb-0 mr-2">Chất lượng sản phẩm :</p>
-                                    <div class="text-primary">
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </div>
-                                <form action="{{ route('client.comment', ['product' => $data->id]) }}" method="post">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="message">Chia sẻ ý kiến của bạn</label>
-                                        <textarea id="message" cols="30" rows="5" class="form-control" style="resize: none;" name="comment"></textarea>
-                                    </div>
-                                    <div class="form-group mb-0">
-                                        <button type="submit" value="Leave Your Review" class="btn btn-primary px-3">
-                                            Gửi
-                                        </button>
-                                    </div>
-                                </form>
+                                @if (Auth::check() && !$userHasCommented)
+                                    <h4 class="mb-4">Đánh giá sản phẩm</h4>
+                                    <form action="{{ route('client.comment', ['product' => $data->id]) }}"
+                                        method="post">
+                                        @csrf
+                                        <div class="d-flex my-3">
+                                            <p class="mb-0 mr-2">Chất lượng sản phẩm :</p>
+                                            <div class="text-primary rating-stars" data-rating="0">
+                                                <i class="far fa-star" data-star="1"></i>
+                                                <i class="far fa-star" data-star="2"></i>
+                                                <i class="far fa-star" data-star="3"></i>
+                                                <i class="far fa-star" data-star="4"></i>
+                                                <i class="far fa-star" data-star="5"></i>
+                                                <input type="hidden" name="rating" id="selected-rating"
+                                                    value="0">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message">Chia sẻ ý kiến của bạn</label>
+                                            <textarea id="message" cols="30" rows="5" class="form-control" style="resize: none;" name="comment"></textarea>
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <button type="submit" value="Leave Your Review"
+                                                class="btn btn-primary px-3">
+                                                Gửi
+                                            </button>
+                                        </div>
+                                    </form>
+                                @endif
+
                             </div>
                         </div>
                     </div>
@@ -300,4 +343,51 @@
 @endsection
 @section('my-js')
     <script src="{{ asset('client_asset/js/addToCart.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            const $ratingStarsContainer = $('.rating-stars');
+            const $hiddenRatingInput = $('#selected-rating');
+
+            // Hiển thị số sao đã chọn
+            function updateStarDisplay(rating) {
+                $ratingStarsContainer.find('i').each(function() {
+                    const starValue = $(this).data('star');
+                    if (starValue <= rating) {
+                        $(this).removeClass('far fa-star').addClass(
+                            'fas fa-star selected');
+                    } else {
+                        $(this).removeClass('fas fa-star selected').addClass('far fa-star');
+                    }
+                });
+            }
+
+            // Gọi đánh giá ban đầu
+            updateStarDisplay(parseInt($hiddenRatingInput.val() || 0));
+
+            // Sự kiện hover
+            $ratingStarsContainer.find('i').on('mouseover', function() {
+                const hoverValue = $(this).data('star');
+                $ratingStarsContainer.find('i').each(function() {
+                    if ($(this).data('star') <= hoverValue) {
+                        $(this).removeClass('far fa-star').addClass(
+                            'fas fa-star active');
+                    } else {
+                        $(this).removeClass('fas fa-star active').addClass('far fa-star');
+                    }
+                });
+            });
+
+            $ratingStarsContainer.find('i').on('mouseout', function() {
+                updateStarDisplay(parseInt($hiddenRatingInput.val()));
+            });
+
+            // Xử lý sự kiện click (chọn sao)
+            $ratingStarsContainer.find('i').on('click', function() {
+                const clickedValue = $(this).data('star');
+                $hiddenRatingInput.val(clickedValue);
+                updateStarDisplay(clickedValue);
+                console.log("Sao", clickedValue);
+            });
+        });
+    </script>
 @endsection

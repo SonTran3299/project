@@ -12,18 +12,20 @@
             <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>0123456789</p>
         </div>
         <div class="col-lg-8 col-md-12">
-            <div class="row">      
+            <div class="row">
                 <div class="col-md-6 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-dark mb-2" href="{{route('client.home')}}"><i class="fa fa-angle-right mr-2"></i>Trang chủ</a>
-                        <a class="text-dark mb-2" href="{{route('client.shop')}}"><i class="fa fa-angle-right mr-2"></i>Cửa hàng</a>
+                        <a class="text-dark mb-2" href="{{ route('client.home') }}"><i
+                                class="fa fa-angle-right mr-2"></i>Trang chủ</a>
+                        <a class="text-dark mb-2" href="{{ route('client.shop') }}"><i
+                                class="fa fa-angle-right mr-2"></i>Cửa hàng</a>
                         {{-- <a class="text-dark mb-2" href=""><i class="fa fa-angle-right mr-2"></i>Shop
                             Detail</a> --}}
-                        <a class="text-dark mb-2" href=""><i class="fa fa-angle-right mr-2"></i>Giỏ hàng</a>
-                        <a class="text-dark mb-2" href="checkout.html"><i
-                                class="fa fa-angle-right mr-2"></i>Checkout</a>
-                        <a class="text-dark" href="{{route('client.contact')}}"><i class="fa fa-angle-right mr-2"></i>Liên hệ</a>
+                        <a class="text-dark mb-2" href="{{ route('client.cart') }}"><i
+                                class="fa fa-angle-right mr-2"></i>Giỏ hàng</a>
+                        <a class="text-dark" href="{{ route('client.contact') }}"><i
+                                class="fa fa-angle-right mr-2"></i>Liên hệ</a>
                     </div>
                 </div>
 

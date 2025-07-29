@@ -5,9 +5,10 @@
     <meta charset="utf-8">
     <title>My Project</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    {{-- <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description"> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="login-url" content="{{ route('login') }}">
 
     <!-- Favicon -->
     <link href="{{ asset('client_asset/img/favicon.ico') }}" rel="icon">

@@ -4,7 +4,9 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    
+
+    const loginUrl = $('meta[name="login-url"]').attr('content');
+
     $('.add-product-to-cart').on('click', function (e) {
         e.preventDefault();
 
@@ -14,7 +16,6 @@ $(document).ready(function () {
             method: "POST",
             url: url,
             data: {
-                //_token: '{{ csrf_token() }}',
                 product_id: productId
             },
             success: function (response) {
@@ -23,7 +24,7 @@ $(document).ready(function () {
             },
             statusCode: {
                 401: function () {
-                    window.location.href = "{{ route('login') }}";
+                    window.location.href = loginUrl;
                 }
             }
         });

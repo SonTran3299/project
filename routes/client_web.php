@@ -25,9 +25,7 @@ Route::prefix('')
     ->name('client.')
     ->group(function () {
         Route::get('shop', 'shop')->name('shop');
-
         Route::get('contact', 'contact')->name('contact');
-
         Route::get('order-history', 'orderHistory')->name('order-history');
     });
 
@@ -48,15 +46,9 @@ Route::prefix('user')
 Route::prefix('')
     ->controller(DetailController::class)
     ->name('client.')
-    ->middleware('auth')
     ->group(function () {
         Route::get('detail/{product}', 'detail')->name('detail');
-        Route::post('leave-comment/{product}', 'comment')->name('comment');
+        Route::post('leave-comment/{product}', 'comment')->name('comment')->middleware('auth');
     });
 
 Route::get('/', [HomeController::class, 'index'])->name('client.home');
-
-// Route::get('mail', function () {
-//     $orderItems = OrderItem::where('order_id', 5)->get();
-//     return view('mail.customer', ['orderItems' => $orderItems]);
-// });

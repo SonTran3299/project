@@ -6,9 +6,15 @@
             <div class="card-header">
                 <h3 class="card-title">Tạo danh mục sản phẩm</h3>
             </div>
-            <form role="form" action="{{ route('admin.product_category.store') }}" method="post">
+            <form role="form" action="{{ route('admin.product_category.store') }}" method="post"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
+                    <div class="form-group">
+                        <label for="image">Ảnh danh mục</label>
+                        <input type="file" class="form-control" id="image" name="image">
+                    </div>
+
                     <div class="form-group">
                         <label for="name">Tên danh mục sản phẩm</label>
                         <input type="text" class="form-control" id="name" name="name"

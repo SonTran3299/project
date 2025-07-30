@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\ProductCategoryUpdateRequest;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -43,13 +44,23 @@ class ProductCategoryController extends Controller
 
     public function store(ProductCategoryStoreRequest $request)
     {
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $fileName = $image->getClientOriginalName();
+            $extension = $image->getClientOriginalExtension();
+            $fileName = pathinfo($fileName, PATHINFO_FILENAME);
+            $fileName = sprintf('%s_%s.%s', $fileName, uniqid(), $extension);
+            $image->move(public_path('images/category'), $fileName);
+        }
+
         $check = ProductCategory::create([
             'name' => $request->name,
             'slug' => $request->slug,
-            'status' => $request->status
-        ]); //mass asignment
+            'status' => $request->status,
+            'image' => $request->image
+        ]) ? 'Thêm thành công' : 'Thất bại'; //mass asignment
 
-        return redirect()->route('admin.product_category.list')->with('msg', $check ? 'Success' : 'Fail');
+        return redirect()->route('admin.product_category.list')->with('msg', $check);
     }
 
     public function makeSlug(Request $request)
@@ -77,9 +88,30 @@ class ProductCategoryController extends Controller
 
     public function update(ProductCategoryUpdateRequest $request, ProductCategory $productCategory)
     {
+        $productCategory = ProductCategory::findOrFail($productCategory->id);
+        $newImage = $productCategory->image;
+
+        if ($request->hasFile('image')) {
+            if ($productCategory->image) {
+                $oldFilePath = public_path('images/category/' . $productCategory->image);
+                if (File::exists($oldFilePath)) {
+                    File::delete($oldFilePath);
+                }
+            }
+
+            $image = $request->file('image');
+            $newFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $image->getClientOriginalExtension();
+
+            $newImage = sprintf('%s_%s.%s', $newFileName, uniqid(), $extension);
+
+            $image->move(public_path('images/category'), $newImage);
+        }
+
         $productCategory->name = $request->name;
         $productCategory->slug = $request->slug;
         $productCategory->status = $request->status;
+        $productCategory->image = $newImage;
         $check = $productCategory->save() ? 'Thành công' : 'Thất bại';
 
         return redirect()->route('admin.product_category.list')->with('msg', $check);

@@ -70,6 +70,14 @@
                                 <p>Sản phẩm</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.order.list') }}"
+                                class="nav-link {{ Request::routeIs('admin.order.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Đơn hàng</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

@@ -99,7 +99,7 @@ class CartController extends Controller
             $order->user_id = $userId;
             $order->address = $request->address;
             $order->note = $request->note;
-            $order->status = 'pending';
+            $order->status = 'chưa xác nhận';
             $order->subtotal = $caculatePrice['subtotal'];
             $order->shipping_fee = $caculatePrice['shippingFee'];
             $order->total = $caculatePrice['total'];
@@ -120,7 +120,7 @@ class CartController extends Controller
                 'order_id' => $order->id,
                 'payment_method' => $request->payment_method,
                 'total' => $caculatePrice['total'],
-                'status' => 'pending',
+                'status' => 'chưa xác nhận',
             ]);
 
             //Update phone and address of user

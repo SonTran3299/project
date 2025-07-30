@@ -90,6 +90,26 @@ class ProductController extends Controller
 
     public function update(ProductUpdateRequest $request, Product $product)
     {
+        $product = Product::findOrFail($product->id);
+        $newMainImage = $product->main_image;
+
+        if ($request->hasFile('main_image')) {
+            if ($product->main_image) {
+                $oldFilePath = public_path('images/product/main_image/' . $product->main_image);
+                if (File::exists($oldFilePath)) {
+                    File::delete($oldFilePath);
+                }
+            }
+
+            $image = $request->file('main_image');
+            $newFileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $image->getClientOriginalExtension();
+
+            $newMainImage = sprintf('%s_%s.%s', $newFileName, uniqid(), $extension);
+
+            $image->move(public_path('images/product/main_image'), $newMainImage);
+        }
+
         $product->name = $request->name;
         $product->description = $request->description;
         $product->price = $request->price;
@@ -97,7 +117,8 @@ class ProductController extends Controller
         $product->discount_percentage = $request->discount_percentage;
         $product->product_category_id = $request->product_category_id;
         $product->status = $request->status;
-        $check = $product->save() ? 'Cập nhật sản phẩm thành công' : 'Cập nhật sản phẩm thất bại'; //update record
+        $product->main_image = $newMainImage;
+        $check = $product->save() ? 'Cập nhật sản phẩm thành công' : 'Cập nhật sản phẩm thất bại';
 
         return redirect()->route('admin.product.list')->with('msg', $check);
     }

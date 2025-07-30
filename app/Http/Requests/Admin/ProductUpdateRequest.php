@@ -13,7 +13,7 @@ class ProductUpdateRequest extends ProductStoreRequest
             'status' => 'required',
             'discount_percentage' => 'nullable|numeric|min:0|max:1',
             'stock' => 'required|min:1',
-            'main_image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ];
     }
 }

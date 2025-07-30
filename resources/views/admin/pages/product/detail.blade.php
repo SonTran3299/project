@@ -6,9 +6,44 @@
             <div class="card-header">
                 <h3 class="card-title">Chi tiết sản phẩm</h3>
             </div>
-            <form role="form" action="{{ route('admin.product.update', ['product' => $data->id]) }}" method="post">
+            <form role="form" action="{{ route('admin.product.update', ['product' => $data->id]) }}" method="post"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
+                    <div class="form-group">
+                        <label for="main-image" class="mr-4">Ảnh chính của sản phẩm</label>
+                        <img src="{{ asset("images/product/main_image/$data->main_image") }}" alt="{{ $data->name }}"
+                            style="width:160px" class="mr-4" id="current-main-image"
+                            data-original-src="{{ asset("images/product/main_image/$data->main_image") }}">
+
+                        <button type="button" class="btn btn-secondary" id="change-main-image-btn">
+                            Đổi ảnh
+                        </button>
+
+                        <button type="button" class="btn btn-danger d-none" id="cancel-change-image-btn">
+                            Hủy
+                        </button>
+
+                        <input class="d-none" type="file" class="form-control" id="main-image" name="main_image">
+                    </div>
+                    @error('main_image')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+
+                    {{-- <div class="form-group">
+                        <label for="image" class="mr-4">Ảnh phụ của sản phẩm</label>
+                        <img src="{{ asset("images/product/product_image/$data->main_image") }}" alt="{{ $data->name }}"
+                            style="width:160px" class="mr-4">
+                        <button type="button" class="btn btn-secondary" id="change-main-image">
+                            Đổi ảnh
+                        </button>
+                        <input class="d-none form-control mt-2" type="file" class="form-control" id="image"
+                            name="image">
+                    </div>
+                    @error('image')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror --}}
+
                     <div class="form-group">
                         <label for="name">Tên sản phẩm</label>
                         <input type="text" class="form-control" id="name" name="name"
@@ -61,7 +96,8 @@
                             <select id="category" name="product_category_id" class="form-control">
                                 <option value="">---Chọn---</option>
                                 @foreach ($categoryList as $category)
-                                    <option {{ $data->product_category_id === $category->id ? 'selected' : '' }} value="{{ $category->id }}">
+                                    <option {{ $data->product_category_id === $category->id ? 'selected' : '' }}
+                                        value="{{ $category->id }}">
                                         {{ $category->name }}</option>
                                 @endforeach
                             </select>
@@ -110,5 +146,47 @@
         if (oldDescription) {
             quill.clipboard.dangerouslyPasteHTML(oldDescription);
         }
+
+        $(document).ready(function() {
+            const changeImageBtn = $('#change-main-image-btn');
+            const cancelChangeBtn = $('#cancel-change-image-btn');
+            const mainImageInput = $('#main-image');
+            const currentMainImage = $('#current-main-image');
+
+            const originalImageSrc = currentMainImage.data('original-src');
+
+            // Nhấn để chọn ảnh
+            changeImageBtn.on('click', function(e) {
+                e.preventDefault();
+                $('#main-image').click();
+            });
+
+            mainImageInput.on('change', function() {
+                const file = this.files[0]; 
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        currentMainImage.attr('src', e.target.result);
+                        cancelChangeBtn.removeClass('d-none');
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    currentMainImage.attr('src', originalImageSrc);
+                    cancelChangeBtn.addClass('d-none');
+                }
+            });
+
+            cancelChangeBtn.on('click', function(e) {
+                e.preventDefault();
+                currentMainImage.attr('src', originalImageSrc);
+                
+                mainImageInput.val(''); 
+
+                cancelChangeBtn.addClass('d-none');
+            });
+        });
     </script>
 @endsection

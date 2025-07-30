@@ -3,25 +3,50 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $productStatusCounts = Product::selectRaw('status, count(*) as total')
-            ->groupBy('status')
-            ->pluck('total', 'status');
+        return view(
+            'admin.dashboard.index',
+            [
+                'productSold' => $this->soldProducts(),
+                'countOrder' => $this->countNewOrder(),
+                'countUser' => $this->countUser()
+            ]
+        );
+    }
 
-        $hideStatusCount = $productStatusCounts->get(0, 0); 
-        $showStatusCount = $productStatusCounts->get(1, 0); 
+    protected function countNewOrder()
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
 
-        $productStatus = [
-            ['Tình trạng', 'Trạng thái'],
-            ['Ẩn', $hideStatusCount],
-            ['Hiện', $showStatusCount]
-        ];
-        return view('admin.dashboard.index', ['productStatus' => $productStatus]);
+        return Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
+    }
+
+    protected function countUser()
+    {
+        return User::count() - 1;
+    }
+
+    protected function soldProducts()
+    {
+        $products = OrderItem::selectRaw('name, sum(quantity) as total')
+            ->groupBy('name')->get();
+
+        $chartData = [['Tên Sản phẩm', 'Số lượng đã bán']];
+        foreach ($products as $item) {
+            $chartData[] = [$item->name, (int) $item->total];
+        }
+
+        return $chartData;
     }
 }

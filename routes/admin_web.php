@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
@@ -60,5 +61,15 @@ Route::prefix('admin/product')
 
 //---User---
 Route::get('admin/user', [UserController::class, 'list'])->name('admin.user.list')->middleware(CheckIsAdmin::class);
+
+Route::prefix('admin/order')
+    ->controller(OrderController::class)
+    ->name('admin.order.')
+    ->middleware(CheckIsAdmin::class)
+    ->group(function () {
+        Route::get('list', 'index')->name('list');
+        Route::get('detail/{order}', 'detail')->name('detail');
+        Route::post('update-order-status/{order}', 'updateOrderStatus')->name('update-order-status');
+    });
 
 Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard')->middleware(CheckIsAdmin::class);

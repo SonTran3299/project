@@ -9,7 +9,8 @@ class ProductCategoryUpdateRequest extends ProductCategoryStoreRequest
         return [
             'name' => 'min:3|max:255|required|unique:product_category,name,' . $this->route('productCategory')->id,
             'slug' => 'min:1|max:255|required',
-            'status' => 'required'
+            'status' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 }

@@ -11,6 +11,8 @@ class Order extends Model
    
     protected $table = 'order';
 
+    public $guarded = [];
+
     public function orderItems(){
         return $this->hasMany(OrderItem::class, 'order_id');
     }

@@ -6,9 +6,30 @@
             <div class="card-header">
                 <h3 class="card-title">Chi tiết danh mục sản phẩm</h3>
             </div>
-            <form role="form" action="{{ route('admin.product_category.update', ['productCategory' => $data->id]) }}" method="post">
+            <form role="form" action="{{ route('admin.product_category.update', ['productCategory' => $data->id]) }}"
+                method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
+                    <div class="form-group">
+                        <label for="main-image" class="mr-4">Ảnh</label>
+                        <img src="{{ asset("images/category/$data->image") }}" alt="{{ $data->name }}"
+                            style="width:160px" class="mr-4" id="current-main-image"
+                            data-original-src="{{ asset("images/category/$data->image") }}">
+
+                        <button type="button" class="btn btn-secondary" id="change-main-image-btn">
+                            Đổi ảnh
+                        </button>
+
+                        <button type="button" class="btn btn-danger d-none" id="cancel-change-image-btn">
+                            Hủy
+                        </button>
+
+                        <input class="d-none" type="file" class="form-control" id="image" name="image">
+                    </div>
+                    @error('image')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+
                     <div class="form-group">
                         <label for="name">Tên danh mục sản phẩm</label>
                         <input type="text" class="form-control" id="name" name="name"
@@ -63,6 +84,46 @@
                         $('#slug').val(response.slug);
                     }
                 });
+            });
+
+            const changeImageBtn = $('#change-main-image-btn');
+            const cancelChangeBtn = $('#cancel-change-image-btn');
+            const imageInput = $('#image');
+            const currentMainImage = $('#current-main-image');
+
+            const originalImageSrc = currentMainImage.data('original-src');
+
+            // Nhấn để chọn ảnh
+            changeImageBtn.on('click', function(e) {
+                e.preventDefault();
+                imageInput.click();
+            });
+
+            imageInput.on('change', function() {
+                const file = this.files[0]; 
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        currentMainImage.attr('src', e.target.result);
+                        cancelChangeBtn.removeClass('d-none');
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    currentMainImage.attr('src', originalImageSrc);
+                    cancelChangeBtn.addClass('d-none');
+                }
+            });
+
+            cancelChangeBtn.on('click', function(e) {
+                e.preventDefault();
+                currentMainImage.attr('src', originalImageSrc);
+                
+                imageInput.val(''); 
+
+                cancelChangeBtn.addClass('d-none');
             });
         });
     </script>

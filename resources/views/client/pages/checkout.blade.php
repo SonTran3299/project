@@ -75,6 +75,11 @@
                                 <h6 class="font-weight-medium">{{ Number::currency($caculatePrice['subtotal']) }}</h6>
                             </div>
                             <div class="d-flex justify-content-between">
+                                <h6 class="font-weight-medium">Giảm giá</h6>
+                                <h6 class="font-weight-medium text-danger font-italic">
+                                    {{ Number::currency($caculatePrice['discount']) }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Phí giao hàng</h6>
                                 <h6 class="font-weight-medium">{{ Number::currency($caculatePrice['shippingFee']) }}</h6>
                             </div>
@@ -114,7 +119,8 @@
                             </div> --}}
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
-                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Đặt hàng</button>
+                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3"
+                                style="font-size: 18px">Xác nhận đặt hàng</button>
                         </div>
                     </div>
                 </div>

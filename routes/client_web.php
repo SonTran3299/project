@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\ClientController;
+use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\Client\DetailController;
 use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\HomeController;
@@ -20,12 +21,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('google/redirect', [GoogleController::class, 'redirect'])->name('client.google.redirect');
 Route::get('google/callback', [GoogleController::class, 'callback'])->name('client.google.callback');
 
+Route::get('/', [HomeController::class, 'index'])->name('client.home');
+
 Route::prefix('')
     ->controller(ClientController::class)
     ->name('client.')
     ->group(function () {
         Route::get('shop', 'shop')->name('shop');
-        Route::get('contact', 'contact')->name('contact');
         Route::get('order-history', 'orderHistory')->name('order-history');
     });
 
@@ -51,4 +53,12 @@ Route::prefix('')
         Route::post('leave-comment/{product}', 'comment')->name('comment')->middleware('auth');
     });
 
-Route::get('/', [HomeController::class, 'index'])->name('client.home');
+    Route::prefix('')
+    ->controller(ContactController::class)
+    ->name('client.')
+    ->group(function () {
+        Route::get('contact', 'index')->name('contact');
+        Route::post('receive-message', 'store')->name('receive-message');
+    });
+
+

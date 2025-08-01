@@ -19,7 +19,8 @@ class DashboardController extends Controller
             [
                 'productSold' => $this->soldProducts(),
                 'countOrder' => $this->countNewOrder(),
-                'countUser' => $this->countUser()
+                'countUser' => $this->countUser(),
+                'successRate' => self::successfulDeliveryRate()
             ]
         );
     }
@@ -48,5 +49,17 @@ class DashboardController extends Controller
         }
 
         return $chartData;
+    }
+
+    protected static function successfulDeliveryRate()
+    {
+        $total = Order::whereIn('status', [3, 5])->count();
+        $totalDelivered = Order::where('status', 3)->count();
+
+        $rate = 0; 
+        if ($total > 0) {
+            $rate = ($totalDelivered / $total) * 100; 
+        }
+        return round($rate, 2);
     }
 }

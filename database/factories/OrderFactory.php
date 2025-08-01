@@ -25,8 +25,7 @@ class OrderFactory extends Factory
         $shipperIds = $dataShipper->pluck('id')->toArray();
         return [
             'cart_id' => fake()->randomElement($cartIds),
-            'shipper_id' => fake()->randomElement($shipperIds),
-            'payment' => fake()->name(),
+            //'shipper_id' => fake()->randomElement($shipperIds),
             'created_at' => now(),
             'updated_at' => now()
         ];

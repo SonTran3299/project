@@ -23,17 +23,20 @@ class CartController extends Controller
         $total = 0;
         $subtotal = 0;
         $shippingFee = 0;
+        $discount = 0;
         foreach ($carts as $cart) {
             $subtotal += $cart->product->price * $cart->quantity;
+            $discount += $cart->product->price * $cart->product->discount_percentage * $cart->quantity;
         }
         if ($subtotal < $freeShippingPrice) {
             $shippingFee = $shippingPrice;
         }
-        $total = $subtotal + $shippingFee;
+        $total = $subtotal + $shippingFee - $discount;
 
         return [
             'total' => $total,
             'subtotal' => $subtotal,
+            'discount' => $discount,
             'shippingFee' => $shippingFee,
         ];
     }
@@ -52,8 +55,7 @@ class CartController extends Controller
         $cart[$product->id] = [
             'name' => $product->name,
             'price' => $product->price,
-            'quantity' => ($cart[$product->id]['quantity'] ?? 0) + 1,
-            'main_image' => $product->main_image
+            'quantity' => ($cart[$product->id]['quantity'] ?? 0) + 1
         ];
 
         session()->put('cart', $cart);
@@ -62,7 +64,7 @@ class CartController extends Controller
         foreach ($sessionCart as $productId => $item) {
             $quantity = $item['quantity'];
 
-            self::insertOrUpdateCart(Auth::id(), $productId, $quantity, $item['main_image']);
+            self::insertOrUpdateCart(Auth::id(), $productId, $quantity);
         }
         session()->put('cart', []);
 
@@ -71,7 +73,7 @@ class CartController extends Controller
 
     public function addToCartFromDetail(Product $product, Request $request)
     {
-        self::insertOrUpdateCart(Auth::id(), $product->id, $request->quantity, $product->main_image);
+        self::insertOrUpdateCart(Auth::id(), $product->id, $request->quantity);
         return redirect()->route('client.cart');
     }
     public function checkout()
@@ -99,7 +101,7 @@ class CartController extends Controller
             $order->user_id = $userId;
             $order->address = $request->address;
             $order->note = $request->note;
-            $order->status = 'chưa xác nhận';
+            $order->status = 0;
             $order->subtotal = $caculatePrice['subtotal'];
             $order->shipping_fee = $caculatePrice['shippingFee'];
             $order->total = $caculatePrice['total'];
@@ -110,9 +112,10 @@ class CartController extends Controller
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item->product_id;
                 $orderItem->price = $item->product->price;
+                $orderItem->discount_percentage = $item->product->discount_percentage;
                 $orderItem->name = $item->product->name;
                 $orderItem->quantity = $item->quantity;
-                $orderItem->main_image = $item->main_image;
+                $orderItem->main_image = $item->product->main_image;
                 $orderItem->save();
             }
 
@@ -120,7 +123,7 @@ class CartController extends Controller
                 'order_id' => $order->id,
                 'payment_method' => $request->payment_method,
                 'total' => $caculatePrice['total'],
-                'status' => 'chưa xác nhận',
+                'status' => 'pending',
             ]);
 
             //Update phone and address of user
@@ -214,7 +217,7 @@ class CartController extends Controller
         return response()->json(['count' => $cartCount]);
     }
 
-    public static function insertOrUpdateCart(int|string $userId, int|string $productId, int|string $quantity, string $image): void
+    public static function insertOrUpdateCart(int|string $userId, int|string $productId, int|string $quantity): void
     {
         $cartItem = Cart::where('user_id', $userId)
             ->where('product_id', $productId)
@@ -227,8 +230,7 @@ class CartController extends Controller
             Cart::create([
                 'user_id' => $userId,
                 'product_id' => $productId,
-                'quantity' => $quantity,
-                'main_image' => $image
+                'quantity' => $quantity
             ]);
         }
     }

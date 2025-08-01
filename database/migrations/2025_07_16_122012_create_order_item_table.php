@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_item', function (Blueprint $table) {
-            $table->id();
+            $table->id(); 
+            $table->string('name');     
+            $table->float('price', 2);
+            $table->float('discount_percentage')->default(0);       
+            $table->integer('quantity');
+            $table->string('main-image')->nullable();
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('order');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('product');
-            $table->float('price', 2);
-            $table->string('name');
-            $table->string('main-image')->nullable();
-            $table->integer('quantity');
             $table->timestamps();
         });
     }

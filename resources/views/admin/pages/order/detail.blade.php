@@ -25,7 +25,7 @@
 
                         <div>
                             <span>Trạng thái:</span>
-                            <span class="text-danger">{{ $data->status }}</span>
+                            <span class="text-danger">{{ $data->status_to_text }}</span>
                         </div>
                     </div>
                     <hr class="my-3" style="border-top: 1px solid #eee;">
@@ -109,23 +109,27 @@
                         </div>
                     </div>
                 </div>
-                @if ($data->status != 'đã hủy')
+                @if ($data->status !== 4)
                     <form class="ml-3" action="{{ route('admin.order.update-order-status', ['order' => $data->id]) }}"
                         method="post">
                         @csrf
-                        @if ($data->status == 'chưa xác nhận')
-                            <input type="hidden" name="status" value="xác nhận đơn hàng">
+                        @if ($data->status === 0)
+                            <input type="hidden" name="status" value="1">
                             <button type="submit" class="btn btn-success">Xác nhận</button>
                         @else
-                            @if ($data->status == 'xác nhận đơn hàng')
-                                <input type="hidden" name="status" value="đang giao">
+                            @if ($data->status === 1)
+                                <input type="hidden" name="status" value="2">
                                 <button type="submit" class="btn btn-success">Giao hàng</button>
                             @else
-                                @if ($data->status == 'đang giao')
-                                    <input type="hidden" name="status" value="giao thành công">
+                                @if ($data->status === 2)
+                                    <input type="hidden" name="status" value="3">
                                     <button type="submit" class="btn btn-success">Giao hàng thành công</button>
                                 @endif
                             @endif
+                        @endif
+                        @if ($data->status === 2)
+                            <input type="hidden" name="status" value="5">
+                            <button type="submit" class="btn btn-danger">Giao hàng thất bại</button>
                         @endif
                     </form>
                 @endif

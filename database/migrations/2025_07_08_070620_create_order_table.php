@@ -22,10 +22,9 @@ return new class extends Migration
             $table->float('subtotal', 2);
             $table->float('total', 2);
             $table->unsignedInteger('shipping_fee')->default(0);
-            $table->string('status')->nullable();
+            $table->unsignedTinyInteger('status')->nullable();
             //$table->unsignedBigInteger('shipper_id');
             //$table->foreign('shipper_id')->references('id')->on('shippers');
-            //$table->string('payment');
             $table->timestamps();
         });
     }

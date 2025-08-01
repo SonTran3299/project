@@ -18,20 +18,20 @@
             </div>
         </div>
         <!-- ./col -->
-        {{-- <div class="col-lg-3 col-6">
+        <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>53<sup style="font-size: 20px">%</sup></h3>
+                    <h3>{{ $successRate }}<sup style="font-size: 20px">%</sup></h3>
 
-                    <p>Bounce Rate</p>
+                    <p>Tỷ lệ hoàn thành đơn</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-stats-bars"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">More info (chưa) <i class="fas fa-arrow-circle-right"></i></a>
             </div>
-        </div> --}}
+        </div>
         <!-- ./col -->
         <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -77,6 +77,20 @@
         <div class="card-body d-flex justify-content-center align-items-center">
             <div id="product-sold" class="chart tab-pane" style="width: 800px; height: 400px;">
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-chart-line mr-1"></i>
+                Doanh thu
+            </h3>
+        </div>
+        <div class="card-body">
+            <div>GROSS: 1000000</div>
+            <div>NET: 700000</div>
+            <div>Chi phí phát sinh: 300000</div>
         </div>
     </div>
 @endsection

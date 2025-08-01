@@ -86,6 +86,7 @@ class LoginRequest extends FormRequest
     public function messages(): array {
         return [
             'email.required' => 'Bắt buộc phải nhập email',
+            'email.email' => 'Sai định dạng email',
             'password.required' => 'Bắt buộc phải nhập mật khẩu',
         ];
     }

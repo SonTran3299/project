@@ -76,7 +76,7 @@ class ProductCategoryController extends Controller
 
     public function destroy(ProductCategory $productCategory)
     {
-        $msg = $productCategory->delete() ? 'Thành công' : 'Thất bại';
+        $msg = $productCategory->delete() ? 'Xóa thành công' : 'Xóa thất bại';
 
         return redirect()->route('admin.product_category.list')->with('msg', $msg);
     }
@@ -112,7 +112,7 @@ class ProductCategoryController extends Controller
         $productCategory->slug = $request->slug;
         $productCategory->status = $request->status;
         $productCategory->image = $newImage;
-        $check = $productCategory->save() ? 'Thành công' : 'Thất bại';
+        $check = $productCategory->save() ? 'Cập nhật danh mục thành công' : 'Cập nhật danh mục thất bại';
 
         return redirect()->route('admin.product_category.list')->with('msg', $check);
     }

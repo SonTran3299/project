@@ -24,48 +24,48 @@
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
             <h2 class="section-title px-5"><span class="px-2">Liên hệ để được giải đáp mọi thắc mắc</span></h2>
+            <h3>{{ session('msg') }}</h3>
         </div>
         <div class="row px-xl-5">
             <div class="col-lg-7 mb-5">
                 <div class="contact-form">
                     <div id="success"></div>
-                    <form name="sentMessage" id="contactForm" novalidate="novalidate">
-                        <div class="control-group">
-                            <input type="text" class="form-control" id="name" placeholder="Tên"
-                                required="required" data-validation-required-message="Please enter your name" />
-                            <p class="help-block text-danger"></p>
+                    <form action="{{ route('client.receive-message') }}" method="POST">
+                        @csrf
+                        <div class="control-group mb-2">
+                            <input type="text" class="form-control" id="name" placeholder="Tên" name="name"
+                                required="required" />
                         </div>
-                        <div class="control-group">
-                            <input type="email" class="form-control" id="email" placeholder="Email"
-                                required="required" data-validation-required-message="Please enter your email" />
-                            <p class="help-block text-danger"></p>
+                        <div class="control-group mb-2">
+                            <input type="email" class="form-control" id="email" placeholder="Email" name="email"
+                                required="required" />
                         </div>
-                        <div class="control-group">
-                            <textarea class="form-control" rows="6" id="message" placeholder="Nội dung" required="required"
-                                data-validation-required-message="Please enter your message"></textarea>
-                            <p class="help-block text-danger"></p>
+                        <div class="control-group mb-2">
+                            <input type="text" class="form-control" id="phone" name="phone"
+                                placeholder="Thêm số điện thoại liên hệ" required="required" />
+                        </div>
+                        <div class="control-group mb-2">
+                            <textarea class="form-control" rows="6" id="message" name="message" placeholder="Nội dung" required="required"
+                                style="resize: none"></textarea>
                         </div>
                         <div>
-                            <button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">Gửi thông tin</button>
+                            <button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">
+                                Gửi thông tin
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="col-lg-5 mb-5">
-                <h5 class="font-weight-semi-bold mb-3">Get In Touch</h5>
+                <h5 class="font-weight-semi-bold mb-3">Liên hệ</h5>
                 <p>Justo sed diam ut sed amet duo amet lorem amet stet sea ipsum, sed duo amet et. Est elitr dolor elitr
                     erat sit sit. Dolor diam et erat clita ipsum justo sed.</p>
                 <div class="d-flex flex-column mb-3">
-                    <h5 class="font-weight-semi-bold mb-3">Store 1</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
+                    <h5 class="font-weight-semi-bold mb-3">Cửa hàng</h5>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>Đường 123, phường 456, TP HCM
+                    </p>
                     <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
-                </div>
-                <div class="d-flex flex-column">
-                    <h5 class="font-weight-semi-bold mb-3">Store 2</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>012 345 6789</p>
                 </div>
             </div>
         </div>

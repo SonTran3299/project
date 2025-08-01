@@ -14,7 +14,7 @@ class OrderController extends Controller
         $itemPerPage = config('my-config.item_per_page');
         $query = Order::orderBy('updated_at', 'desc')->with('user');
 
-        if (!empty($filter) && $filter !== 'all') { 
+        if ($filter !== null && $filter !== '') {
             $query->where('status', $filter);
         }
 
@@ -30,15 +30,21 @@ class OrderController extends Controller
 
     public function updateOrderStatus(Order $order, Request $request)
     {
-        if ($order->status === 'chưa xác nhận') {
+        if ($order->status === 0) {
             $order->status = $request->status;
-        } elseif ($order->status === 'xác nhận đơn hàng') {
+        } elseif ($order->status === 1) {
             $order->status = $request->status;
-        } elseif ($order->status === 'đang giao') {
+        } elseif ($order->status === 2) {
+            $order->status = $request->status;
+        } elseif ($order->status === 3) {
+            $order->status = $request->status;
+        } elseif ($order->status === 4) {
+            $order->status = $request->status;
+        } elseif ($order->status === 5) {
             $order->status = $request->status;
         }
 
-        $check = $order->save() ? 'Thành công' : 'Thất bại';
+        $check = $order->save() ? 'Cập nhật đơn hàng thành công' : 'Cập nhật đơn hàng thất bại';
         return redirect()->route('admin.order.list')->with('msg', $check);
     }
 }

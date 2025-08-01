@@ -28,10 +28,12 @@
                     <table class="table table-bordered text-center mb-0">
                         <thead class="bg-secondary text-dark">
                             <tr>
+                                <th>Hình ảnh</th>
                                 <th>Sản phẩm</th>
                                 <th>Giá</th>
                                 <th>Số lượng</th>
                                 <th>Tổng cộng</th>
+                                <th>Chiết khấu</th>
                                 <th>Xoá</th>
                             </tr>
                         </thead>
@@ -39,7 +41,12 @@
                             @php $totalPrice = 0 @endphp
                             @foreach ($cart as $data)
                                 <tr class="update-total-price">
-                                    <td class="align-middle"><img src="" alt="" style="width: 50px;">
+                                    <td class="align-middle text-left">
+                                        <img src="{{ asset('images/product/main_image/' . $data->product->main_image) }}"
+                                            alt="{{ $data->product->name }}" style="width: 50px;">
+                                    </td>
+                                    <td class="align-middle text-left"><img src="" alt=""
+                                            style="width: 50px;">
                                         {{ $data->product->name }}
                                     </td>
                                     <td class="align-middle">
@@ -69,6 +76,7 @@
                                         $totalPrice += $total;
                                     @endphp
                                     <td class="align-middle">{{ Number::currency($total) }}</td>
+                                    <td class="align-middle">{{ $data->product->discount_percentage * 100 }}%</td>
                                     <td class="align-middle">
                                         <form action="{{ route('client.delete-product', ['product' => $data->id]) }}"
                                             method="post">
@@ -78,7 +86,6 @@
                                                 <i class="fa fa-times"></i>
                                             </button>
                                         </form>
-
                                     </td>
                                 </tr>
                             @endforeach
@@ -103,9 +110,14 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between mb-3 pt-1">
-                                <h6 class="font-weight-medium">Tổng</h6>
+                                <h6 class="font-weight-medium">Tổng tiền</h6>
                                 <h6 class="font-weight-medium cart-subtotal">
                                     {{ Number::currency($caculatePrice['subtotal']) }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 pt-1">
+                                <h6 class="font-weight-medium">Giảm giá</h6>
+                                <h6 class="font-weight-medium cart-subtotal text-danger font-italic">
+                                    {{ Number::currency($caculatePrice['discount']) }}</h6>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Phí vận chuyển</h6>
@@ -121,7 +133,8 @@
                                     {{ Number::currency($caculatePrice['total']) }}
                                 </h5>
                             </div>
-                            <a href="{{ route('client.checkout') }}" class="btn btn-block btn-primary my-3 py-3">
+                            <a href="{{ route('client.checkout') }}" class="btn btn-block btn-success my-3 py-3"
+                                style="font-size: 18px">
                                 Thanh toán
                             </a>
                         </div>

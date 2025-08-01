@@ -27,24 +27,27 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <div class="d-flex justify-content-between">
-                                <button class="btn btn-link btn-block text-left collapsed" type="button"
-                                    data-toggle="collapse" data-target="#collapseControl{{ $loop->iteration }}"
-                                    aria-expanded="false" aria-controls="collapseControl{{ $loop->iteration }}"
-                                    style="font-size: 18px;">
-                                    Đơn hàng #{{ $order->id }}
-                                </button>
-                                @foreach ($order->orderPaymentMethods as $payment)
-                                    <div style="font-size: 18px;">
-                                        {{ $payment->status }}
-                                    </div>
-                                @endforeach
-
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                        data-toggle="collapse" data-target="#collapseControl{{ $loop->iteration }}"
+                                        aria-expanded="false" aria-controls="collapseControl{{ $loop->iteration }}"
+                                        style="font-size: 18px;">
+                                        Đơn hàng #{{ $order->id }}
+                                    </button>
+                                </div>
+                                <div class="col-md-4 text-right" style="font-size: 18px;">
+                                    {{ $order->status_to_text }}
+                                </div>
                             </div>
                         </h2>
                     </div>
                     <div id="collapseControl{{ $loop->iteration }}" class="collapse" aria-labelledby="heading2">
                         @foreach ($order->orderItems as $orderItem)
+                            @php
+                                $discount = 0;
+                                $discount += $orderItem->price * $orderItem->discount_percentage * $orderItem->quantity;
+                            @endphp
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <img src="{{ asset('images/product/main_image/' . $orderItem->main_image) }}"
@@ -71,6 +74,10 @@
                                 <div>
                                     <span>Tạm tính: </span>
                                     <span>{{ Number::currency($order->subtotal) }}</span>
+                                </div>
+                                <div>
+                                    <span>Giảm giá: </span>
+                                    <span>{{ Number::currency($discount) }}</span>
                                 </div>
                                 <div>
                                     <span>Phí giao hàng: </span>

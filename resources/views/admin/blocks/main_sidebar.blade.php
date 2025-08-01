@@ -11,20 +11,22 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('user_asset/images/user1.svg') }}" class="img-circle elevation-2"
-                    alt="User Image">
+                <img src="{{ asset('user_asset/images/user1.svg') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a href="#" class="d-block">Sơn Trần</a>
             </div>
         </div>
 
+
+
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item has-treeview">
                     {{-- tắt active sau --}}
-                    <a href="{{route('admin.dashboard')}}" class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}"> 
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard

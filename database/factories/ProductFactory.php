@@ -36,7 +36,7 @@ class ProductFactory extends Factory
             'price' => fake()->randomNumber(6, false),
             'stock' => fake()->randomNumber(3, false),
             'main_image' => $imageName.'.jpg',
-            'discount_percentage' => fake()->randomFloat(2, 0, 0.5),
+            'discount_percentage' => fake()->randomFloat(2, 0, 0.3),
             'description' => fake()->randomHtml(2, 2),
             'product_category_id' => fake()->randomElement($productCategoryIds),
             'created_at' => now(),

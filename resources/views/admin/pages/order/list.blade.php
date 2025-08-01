@@ -4,13 +4,6 @@
     <div class="col-md-12">
         <div class="card card-secondary">
             <div class="card-header">
-                <h3>
-                    @if (session('msg'))
-                        <div class="alert alert-success">
-                            {{ session('msg') }}
-                        </div>
-                    @endif
-                </h3>
                 <h3 class="card-title">Danh sách đơn hàng</h3>
             </div>
 
@@ -20,17 +13,19 @@
                     <select class="form-control mr-sm-2" name="filter" id="filter">
                         <option {{ in_array(request()->get('filter'), ['all', '']) ? 'selected' : '' }} value="">
                             ---Chọn---</option>
-                        <option {{ request()->get('filter') == 'chưa xác nhận' ? 'selected' : '' }} value="chưa xác nhận">
-                            Chưa xác nhận
+                        <option {{ request()->get('filter') === '0' ? 'selected' : '' }} value="0">
+                            Chờ xử lý
                         </option>
-                        <option {{ request()->get('filter') == 'xác nhận đơn hàng' ? 'selected' : '' }}
-                            value="xác nhận đơn hàng">Xác nhận
+                        <option {{ request()->get('filter') === '1' ? 'selected' : '' }} value="1">Đã xác nhận
                         </option>
-                        <option {{ request()->get('filter') == 'đang giao' ? 'selected' : '' }} value="đang giao">Đang giao
-                            hàng
+                        <option {{ request()->get('filter') === '2' ? 'selected' : '' }} value="2">
+                            Đang giao hàng
                         </option>
-                        <option {{ request()->get('filter') == 'giao thành công' ? 'selected' : '' }}
-                            value="giao thành công">Đã giao
+                        <option {{ request()->get('filter') === '3' ? 'selected' : '' }} value="3">Đã giao
+                        </option>
+                        <option {{ request()->get('filter') === '4' ? 'selected' : '' }} value="4">Đã hủy
+                        </option>
+                        <option {{ request()->get('filter') === '5' ? 'selected' : '' }} value="5">Giao thất bại
                         </option>
                     </select>
 
@@ -53,7 +48,7 @@
                             <th>Ghi chú</th>
                             <th>Tổng đơn</th>
                             <th>Tình trạng đơn</th>
-                            <th>Ngày cập nhật</th>
+                            <th>Thời gian xử lý</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -66,7 +61,7 @@
                                 <td>{{ $data->address }}</td>
                                 <td>{{ $data->note ?? '-' }}</td>
                                 <td>{{ $data->total }}</td>
-                                <td>{{ $data->status }}</td>
+                                <td>{{ $data->status_to_text }}</td>
                                 <td>{{ $data->updated_at ? \Carbon\Carbon::parse($data->updated_at)->format('d/m/Y H:i:s') : '-' }}
                                 </td>
                                 <td>
@@ -84,4 +79,7 @@
             </div>
         </div>
     </div>
+@endsection
+@section('my-js')
+    @include('admin.blocks.notification')
 @endsection

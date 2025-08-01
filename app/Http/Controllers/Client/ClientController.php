@@ -56,7 +56,7 @@ class ClientController extends Controller
     public function orderHistory()
     {
         $userId = Auth::user()->id;
-        $dataOrder = Order::where('user_id', $userId)->with('orderItems', 'orderPaymentMethods')->get();
+        $dataOrder = Order::where('user_id', $userId)->with('orderItems', 'orderPaymentMethods')->orderBy('updated_at', 'desc')->get();
         return view('client.pages.order_history', ['dataOrder' => $dataOrder]);
     }
 }

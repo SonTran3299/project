@@ -25,7 +25,7 @@ class Contact extends Model
     {
         switch ($this->status) {
             case self::STATUS_PROCESS: return 'Đang xử lý';
-            case self::STATUS_SUCCESS: return 'Đã giải quyết';
+            case self::STATUS_SUCCESS: return 'Đã phản hồi';
             default: return 'Mới';
         }
     }

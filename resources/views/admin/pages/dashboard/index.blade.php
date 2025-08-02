@@ -13,8 +13,8 @@
                 <div class="icon">
                     <i class="ion ion-bag"></i>
                 </div>
-                <a href="{{ route('admin.order.list') }}" class="small-box-footer">Xem chi tiết <i
-                        class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('admin.order.list') }}" class="small-box-footer">Xem chi tiết
+                    <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -29,7 +29,8 @@
                 <div class="icon">
                     <i class="ion ion-stats-bars"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info (chưa) <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('admin.order.list') }}" class="small-box-footer">Xem chi tiết 
+                    <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -68,13 +69,27 @@
     </div>
 
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title m-0">
                 <i class="fas fa-chart-pie mr-1"></i>
                 Sản phẩm
             </h3>
+            <form action="{{ route('admin.dashboard') }}" method="get" class="form-inline ml-auto">
+                <div class="input-group">
+                    <span class="input-group-text">Tháng</span>
+                    <input type="number" class="form-control" name="month" id="month"
+                        value="{{ request()->get('month') ?? \Carbon\Carbon::now()->month }}" aria-label="Month"
+                        aria-describedby="button-addon2" style="width: 80px">
+                    <input type="number" class="form-control" name="year" id="year"
+                        value="{{ request()->get('year') ?? \Carbon\Carbon::now()->year }}" aria-label="Year"
+                        aria-describedby="button-addon2" style="width: 80px">
+                    <button class="btn btn-outline-success" type="submit" id="button-addon2">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="card-body d-flex justify-content-center align-items-center">
+        <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 400px;">
             <div id="product-sold" class="chart tab-pane" style="width: 800px; height: 400px;">
             </div>
         </div>
@@ -88,9 +103,9 @@
             </h3>
         </div>
         <div class="card-body">
-            <div>GROSS: 1000000</div>
-            <div>NET: 700000</div>
-            <div>Chi phí phát sinh: 300000</div>
+            <div>GROSS: {{ Number::currency($sales['grossSale']) }}</div>
+            <div>NET: {{ Number::currency($sales['netSale']) }}</div>
+            <div>Chi phí phát sinh: {{ Number::currency($sales['expense']) }}</div>
         </div>
     </div>
 @endsection

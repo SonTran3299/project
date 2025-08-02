@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
@@ -10,9 +11,9 @@ use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('admin/home', function () {
-    return view('admin.pages.home');
-});
+// Route::get('admin/home', function () {
+//     return view('admin.pages.home');
+// });
 
 //---Product Category---
 Route::prefix('admin/product_category')
@@ -61,6 +62,7 @@ Route::prefix('admin/product')
 
 //---User---
 Route::get('admin/user', [UserController::class, 'list'])->name('admin.user.list')->middleware(CheckIsAdmin::class);
+Route::get('admin/user/detail/{user}', [UserController::class, 'detail'])->name('admin.user.detail')->middleware(CheckIsAdmin::class);
 
 Route::prefix('admin/order')
     ->controller(OrderController::class)
@@ -73,3 +75,7 @@ Route::prefix('admin/order')
     });
 
 Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard')->middleware(CheckIsAdmin::class);
+
+Route::get('admin/feedback', [FeedbackController::class, 'index'])->name('admin.feedback')->middleware(CheckIsAdmin::class);
+Route::get('admin/feedback/detail/{contact}', [FeedbackController::class, 'detail'])->name('admin.feedback.detail')->middleware(CheckIsAdmin::class);
+Route::post('admin/feedback/answer/{contact}', [FeedbackController::class, 'answer'])->name('admin.feedback.answer')->middleware(CheckIsAdmin::class);

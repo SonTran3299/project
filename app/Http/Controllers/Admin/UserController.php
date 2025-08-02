@@ -29,4 +29,9 @@ class UserController extends Controller
 
         return view('admin.pages.user.list', ['datas' => $datas]);
     }
+
+    public function detail(User $user)
+    {
+        return view('admin.pages.user.detail', ['user' => $user]);
+    }
 }

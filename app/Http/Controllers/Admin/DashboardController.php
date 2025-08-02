@@ -12,15 +12,18 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
         return view(
-            'admin.dashboard.index',
+            'admin.pages.dashboard.index',
             [
-                'productSold' => $this->soldProducts(),
-                'countOrder' => $this->countNewOrder(),
-                'countUser' => $this->countUser(),
-                'successRate' => self::successfulDeliveryRate()
+                'productSold' => self::soldProducts($month, $year),
+                'countOrder' => self::countNewOrder(),
+                'countUser' => User::count() - 1,
+                'successRate' => self::caculateSuccessfulDeliveryRate(),
+                'sales' => self::caculateIncome($month, $year),
             ]
         );
     }
@@ -33,14 +36,10 @@ class DashboardController extends Controller
         return Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
     }
 
-    protected function countUser()
+    protected static function soldProducts(string|int $month, string|int $year)
     {
-        return User::count() - 1;
-    }
-
-    protected function soldProducts()
-    {
-        $products = OrderItem::selectRaw('name, sum(quantity) as total')
+        $products = OrderItem::selectRaw('name, sum(quantity) as total')->whereMonth('updated_at', $month)
+            ->whereYear('updated_at', $year)
             ->groupBy('name')->get();
 
         $chartData = [['Tên Sản phẩm', 'Số lượng đã bán']];
@@ -51,15 +50,42 @@ class DashboardController extends Controller
         return $chartData;
     }
 
-    protected static function successfulDeliveryRate()
+    protected static function caculateSuccessfulDeliveryRate(): float
     {
         $total = Order::whereIn('status', [3, 5])->count();
         $totalDelivered = Order::where('status', 3)->count();
 
-        $rate = 0; 
+        $rate = 0;
         if ($total > 0) {
-            $rate = ($totalDelivered / $total) * 100; 
+            $rate = ($totalDelivered / $total) * 100;
         }
         return round($rate, 2);
+    }
+
+    protected static function caculateIncome(string|int $month, string|int $year): array
+    {
+        $startDate = Carbon::createFromDate($year, $month, 1)->startOfDay();
+        $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay();
+
+        $startDate = Carbon::parse($startDate)->startOfDay();
+        $endDate = Carbon::parse($endDate)->endOfDay();
+        $products = OrderItem::whereBetween('updated_at', [$startDate, $endDate])->get();
+
+        $gross_sale = 0;
+        $discount = 0;
+        $net_sale = 0;
+        foreach ($products as $product) {
+            $gross_sale += $product->price * $product->quantity;
+            $discount += $product->price * $product->quantity * $product->discount_percentage;
+        }
+
+        $net_sale = $gross_sale - $discount;
+
+        $expense = $discount + 0; //các khoản chi khác
+        return [
+            'netSale' => $net_sale,
+            'grossSale' => $gross_sale,
+            'expense' => $expense
+        ];
     }
 }

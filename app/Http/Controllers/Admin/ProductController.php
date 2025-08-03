@@ -122,4 +122,13 @@ class ProductController extends Controller
 
         return redirect()->route('admin.product.list')->with('msg', $check);
     }
+
+    public function restore(string|int $id)
+    {
+        $product = Product::withTrashed()->find($id);
+
+        $product->restore();
+
+        return redirect()->route('admin.product.list')->with('msg', 'Khôi phục thành công');
+    }
 }

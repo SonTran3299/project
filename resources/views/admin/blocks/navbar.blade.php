@@ -30,7 +30,7 @@
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     {{ $contact->user_id !== null ? $contact->user->name : $contact->name }}
-                                    <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    <span class="float-right text-sm text-danger"><i class="{{$contact->status === 0 ? 'fas fa-star' : ''}}"></i></span>
                                 </h3>
                                 <p class="text-sm">{{ $contact->message }}</p>
                                 <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
@@ -41,7 +41,7 @@
                     </a>
                     <div class="dropdown-divider"></div>
                 @endforeach
-                <a href="#" class="dropdown-item dropdown-footer">Xem tất cả tin nhắn</a>
+                <a href="{{ route('admin.feedback') }}" class="dropdown-item dropdown-footer">Xem tất cả tin nhắn</a>
             </div>
         </li>
         <!-- Notifications Dropdown Menu -->

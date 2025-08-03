@@ -42,9 +42,7 @@
                                 <td>{{ Number::currency($data->price) }}</td>
                                 <td>{{ $data->stock }}</td>
                                 <td>
-                                    <button class="btn {{ $data->status ? 'btn-success' : 'btn-danger' }}">
-                                        {{ $data->status ? 'Hiện' : 'Ẩn' }}
-                                    </button>
+                                    {{ $data->status ? 'Hiện' : 'Ẩn' }}
                                 </td>
                                 <td>{{ $data->productCategory?->name }}</td>
                                 <td>{{ $data->updated_at ? \Carbon\Carbon::parse($data->updated_at)->format('d/m/Y H:i:s') : '-' }}
@@ -52,13 +50,22 @@
                                 <td>
                                     <a href="{{ route('admin.product.detail', ['product' => $data->id]) }}"
                                         class="btn btn-outline-info"><i class="fa fa-eye"></i></a>
-                                    <form action="{{ route('admin.product.destroy', ['product' => $data->id]) }}"
-                                        method="post" class="d-inline">
-                                        @csrf
-                                        <button class="btn btn-outline-danger" type="submit"
-                                            onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?')"><i
-                                                class="fa fa-trash"></i></button>
-                                    </form>
+                                    @if (!is_null($data->deleted_at))
+                                        <form action="{{ route('admin.product.restore', ['product' => $data->id]) }}"
+                                            method="post">
+                                            @csrf
+                                            <button class="btn btn-primary">Khôi phục</button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('admin.product.destroy', ['product' => $data->id]) }}"
+                                            method="post" class="d-inline">
+                                            @csrf
+                                            <button class="btn btn-outline-danger" type="submit"
+                                                onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?')"><i
+                                                    class="fa fa-trash"></i></button>
+                                        </form>
+                                    @endif
+
                                 </td>
                             </tr>
                         @endforeach
@@ -71,8 +78,6 @@
             </div>
         </div>
     </div>
-
-    
 @endsection
 @section('my-js')
     @include('admin.blocks.notification')

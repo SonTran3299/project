@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // Product::factory(25)->create();
         //$this->call(ProductImageSeeder::class);
         
-        //Chưa
+        
         //Shipper::factory(5)->create(); 
         //Cart::factory(10)->create();
         //Order::factory(5)->create();

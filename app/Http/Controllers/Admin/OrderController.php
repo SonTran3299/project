@@ -10,16 +10,33 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $filter  = $request->filter;
+        $filter  = $request->filter ?? '';
+        $filterOptions = [
+            '' => 'Tất cả',
+            0 => 'Chờ xử lý',
+            1 => 'Đã xác nhận',
+            2 => 'Đang giao hàng',
+            3 => 'Đã giao',
+            4 => 'Đã hủy',
+            5 => 'Giao thất bại',
+        ];
+
         $itemPerPage = config('my-config.item_per_page');
         $query = Order::orderBy('updated_at', 'desc')->with('user');
 
-        if ($filter !== null && $filter !== '') {
+        if ($filter !== '' && in_array($filter, array_keys($filterOptions))) {
             $query->where('status', $filter);
         }
 
         $datas = $query->paginate($itemPerPage);
-        return view('admin.pages.order.list', ['datas' => $datas]);
+        return view(
+            'admin.pages.order.list',
+            [
+                'datas' => $datas,
+                'filterOptions' => $filterOptions,
+                'filter' => $filter,
+            ]
+        );
     }
 
     public function detail(Order $order)

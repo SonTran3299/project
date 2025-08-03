@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class CartController extends Controller
@@ -134,13 +135,13 @@ class CartController extends Controller
 
             DB::commit();
 
-            if ($request->payment_mothod === 'vnpay') {
+            if ($request->payment_method === 'vnpay') {
                 date_default_timezone_set('Asia/Ho_Chi_Minh');
                 $startTime = date("YmdHis");
                 $expire = date('YmdHis', strtotime('+15 minutes', strtotime($startTime)));
 
                 $vnp_TxnRef = $order->id;
-                $vnp_Amount = $order->total;
+                $vnp_Amount = (int)($order->total);
                 $vnp_Locale = 'vn';
                 $vnp_BankCode = 'VNBANK';
                 $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
@@ -149,7 +150,7 @@ class CartController extends Controller
                 $inputData = array(
                     "vnp_Version" => "2.1.0",
                     "vnp_TmnCode" => env('VNPAY_TMNCODE'),
-                    "vnp_Amount" => $vnp_Amount * 100 * 23500,
+                    "vnp_Amount" => $vnp_Amount * 100,
                     "vnp_Command" => "pay",
                     "vnp_CreateDate" => date('YmdHis'),
                     "vnp_CurrCode" => "VND",
@@ -180,7 +181,7 @@ class CartController extends Controller
                 $vnp_Url = env('VNPAY_URL') . "?" . $query;
 
                 if (isset($vnp_HashSecret)) {
-                    $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+                    $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
                     $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
                 }
 
@@ -233,5 +234,85 @@ class CartController extends Controller
                 'quantity' => $quantity
             ]);
         }
+    }
+
+    public function vnpayReturn(Request $request)
+    {
+        $data = $request->all();
+        $inputData = array();
+
+        foreach ($_GET as $key => $value) {
+            if (substr($key, 0, 4) == "vnp_") {
+                $inputData[$key] = $value;
+            }
+        }
+
+        unset($inputData['vnp_SecureHash']);
+        ksort($inputData);
+        $i = 0;
+        $hashData = "";
+        foreach ($inputData as $key => $value) {
+            if ($i == 1) {
+                $hashData = $hashData . '&' . urlencode($key) . "=" . urlencode($value);
+            } else {
+                $hashData = $hashData . urlencode($key) . "=" . urlencode($value);
+                $i = 1;
+            }
+        }
+
+        $vnp_HashSecret = env('VNPAY_HASHSECRET');
+        $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
+
+        $user = Auth::user();
+        $orderId = $request->vnp_TxnRef;
+        $order = Order::find($orderId);
+        $orderPaymentMethod = OrderPaymentMethod::where('order_id', $orderId)->first();
+        if (!$order || !$orderPaymentMethod) {
+            return redirect()->route('client.cart')->with('error', 'Không tìm thấy thông tin đơn hàng. Vui lòng kiểm tra lại.');
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($secureHash == $request->vnp_SecureHash) {
+                if ($request->vnp_ResponseCode == '00') {
+                    $orderPaymentMethod->status = 'đã thanh toán'; 
+                    $orderPaymentMethod->save();
+
+                    foreach ($order->orderItems as $orderItem) {
+                        $product = Product::find($orderItem->product_id);
+                        if ($product) {
+                            $product->stock -= $orderItem->quantity;
+                            $product->save();
+                        }
+                    }
+
+                    Cart::where('user_id', $user->id)->delete();
+
+                    Mail::to('tvs32.ys@gmail.com')->send(new CustomerEmailTemplate($order, $user));
+
+                    DB::commit(); 
+                    return view('vnpay.vnpay-return', ['data' => $data, 'secureHash' => $secureHash]);
+                } else {
+                    $orderPaymentMethod->status = 'thất bại';
+                    $orderPaymentMethod->save();
+
+                    DB::commit(); 
+                    
+                    return redirect()->route('client.order-history')
+                        ->with('error', 'Thanh toán VNPAY thất bại. Vui lòng thử lại hoặc chọn phương thức khác.');
+                }
+            } else {
+                $orderPaymentMethod->status = 'Lỗi'; 
+                $orderPaymentMethod->save();
+
+                DB::commit();
+                return redirect()->route('client.order-history')
+                    ->with('error', 'Lỗi xác thực thanh toán. Vui lòng liên hệ hỗ trợ.');
+            }
+        } catch (\Exception $e) {
+            DB::rollBack(); 
+            return redirect()->route('client.order-history')
+                ->with('error', 'Có lỗi khi xử lý thanh toán. Vui lòng liên hệ hỗ trợ.');
+        }     
     }
 }

@@ -71,7 +71,7 @@
                                 @foreach ($categoryList as $data)
                                     <option {{ old('product_category_id') === $data->id ? 'selected' : '' }}
                                         value="{{ $data->id }}">
-                                        {{ $data->name }}</option>
+                                        {{ Str::title($data->name) }}</option>
                                 @endforeach
                             </select>
                         </div>

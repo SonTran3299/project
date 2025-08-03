@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,21 +36,22 @@ class Order extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getStatusToTextAttribute()
+    // Accessor
+    protected function statusToText(): Attribute
     {
-        switch ($this->status) {
-            case self::STATUS_CONFIRMED:
-                return 'xác nhận đơn hàng';
-            case self::STATUS_SHIPPING:
-                return 'đang giao';
-            case self::STATUS_DELIVERED:
-                return 'giao thành công';
-            case self::STATUS_CANCELLED:
-                return 'đã hủy';
-            case self::STATUS_DELIVERY_FAILED:
-                return 'giao thất bại';
-            default:
-                return 'chờ xử lý';
-        }
+        return Attribute::make(
+            get: function () {
+                $statusArray = [
+                    self::STATUS_PENDING => 'chờ xử lý',
+                    self::STATUS_CONFIRMED => 'xác nhận đơn hàng',
+                    self::STATUS_SHIPPING => 'đang giao',
+                    self::STATUS_DELIVERED => 'giao thành công',
+                    self::STATUS_CANCELLED => 'đã hủy',
+                    self::STATUS_DELIVERY_FAILED => 'giao hàng thất bại'
+                ];
+
+                return $statusArray[$this->status] ?? 'Lỗi không xác định';
+            },
+        );
     }
 }

@@ -28,6 +28,9 @@
     <link href="{{ asset('client_asset/css/style.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+
+    {{-- css cho card product --}}
+    <link rel="stylesheet" href="{{asset('client_asset/css/card.css')}}">
     @yield('custom-style')
 </head>
 

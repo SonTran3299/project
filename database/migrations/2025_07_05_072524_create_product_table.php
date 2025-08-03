@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('discount_percentage')->default(0);
             $table->unsignedBigInteger('product_category_id');
             $table->foreign('product_category_id')->references('id')->on('product_category');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

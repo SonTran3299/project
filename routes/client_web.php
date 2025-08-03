@@ -16,6 +16,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('google/redirect', [GoogleController::class, 'redirect'])->name('client.google.redirect');
@@ -43,6 +44,7 @@ Route::prefix('user')
         Route::post('place-order', 'placeOrder')->name('place-order');
         Route::post('delete-product/{product}', 'deleteProductFromCart')->name('delete-product');
         Route::get('cart-count', 'cartCount')->name('cart-count');
+        Route::get('vnpay_return', 'vnpayReturn')->name('vnpay-return');
     });
 
 Route::prefix('')
@@ -61,4 +63,8 @@ Route::prefix('')
         Route::post('receive-message', 'store')->name('receive-message');
     });
 
+//     Route::get('vnpay_return', function (Request $request){
+//     dd($request->all());
+// });
 
+Route::get('vnpay_return', [CartController::class, 'vnpayReturn'])->name('vnpay-return');

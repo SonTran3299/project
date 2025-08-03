@@ -20,7 +20,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                    <div class="navbar-nav mr-auto py-0">
+                    {{-- <div class="navbar-nav mr-auto py-0">
                         <a href="{{ route('client.home') }}"
                             class="nav-item nav-link {{ Request::routeIs('client.home') ? 'active' : '' }}">Trang
                             chủ</a>
@@ -38,9 +38,9 @@
                         <a href="{{ route('client.contact') }}"
                             class="nav-item nav-link {{ Request::routeIs('client.contact') ? 'active' : '' }}">Liên
                             hệ</a>
-                    </div>
+                    </div> --}}
 
-                    <div class="navbar-nav ml-auto py-0">
+                    {{-- <div class="navbar-nav ml-auto py-0">
                         @auth
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle"
@@ -72,10 +72,10 @@
                             <a href="{{ route('login') }}" class="nav-item nav-link">Đăng nhập</a>
                             <a href="{{ route('register') }}" class="nav-item nav-link">Đăng ký</a>
                         @endauth
-                    </div>
+                    </div> --}}
                 </div>
             </nav>
-
+            <div class="mb-5"></div>
             @yield('header-carousel')
         </div>
     </div>

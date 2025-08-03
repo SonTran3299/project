@@ -11,22 +11,11 @@
             <div class="container mt-2 d-flex justify-content-between">
                 <form action="{{ route('admin.order.list') }}" method="GET" class="form-inline my-2 my-lg-0 ml-auto">
                     <select class="form-control mr-sm-2" name="filter" id="filter">
-                        <option {{ in_array(request()->get('filter'), ['all', '']) ? 'selected' : '' }} value="">
-                            ---Chọn---</option>
-                        <option {{ request()->get('filter') === '0' ? 'selected' : '' }} value="0">
-                            Chờ xử lý
-                        </option>
-                        <option {{ request()->get('filter') === '1' ? 'selected' : '' }} value="1">Đã xác nhận
-                        </option>
-                        <option {{ request()->get('filter') === '2' ? 'selected' : '' }} value="2">
-                            Đang giao hàng
-                        </option>
-                        <option {{ request()->get('filter') === '3' ? 'selected' : '' }} value="3">Đã giao
-                        </option>
-                        <option {{ request()->get('filter') === '4' ? 'selected' : '' }} value="4">Đã hủy
-                        </option>
-                        <option {{ request()->get('filter') === '5' ? 'selected' : '' }} value="5">Giao thất bại
-                        </option>
+                        @foreach ($filterOptions as $key => $value)
+                            <option value="{{ $key }}" {{ (string) $filter === (string) $key ? 'selected' : '' }}>
+                                {{ $value }}
+                            </option>
+                        @endforeach
                     </select>
 
                     <button type="submit"class="btn btn-outline-primary my-2 my-sm-0">
@@ -34,7 +23,6 @@
                     </button>
                 </form>
             </div>
-
 
             <!-- /.card-header -->
             <div class="card-body">

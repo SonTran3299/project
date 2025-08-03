@@ -49,7 +49,9 @@ class ProductCategoryController extends Controller
             $fileName = $image->getClientOriginalName();
             $extension = $image->getClientOriginalExtension();
             $fileName = pathinfo($fileName, PATHINFO_FILENAME);
+
             $fileName = sprintf('%s_%s.%s', $fileName, uniqid(), $extension);
+
             $image->move(public_path('images/category'), $fileName);
         }
 
@@ -57,7 +59,7 @@ class ProductCategoryController extends Controller
             'name' => $request->name,
             'slug' => $request->slug,
             'status' => $request->status,
-            'image' => $request->image
+            'image' => $fileName
         ]) ? 'Thêm thành công' : 'Thất bại'; //mass asignment
 
         return redirect()->route('admin.product_category.list')->with('msg', $check);
@@ -123,6 +125,6 @@ class ProductCategoryController extends Controller
 
         $productCategory->restore();
 
-        return redirect()->route('admin.product_category.list')->with('msg', 'success');
+        return redirect()->route('admin.product_category.list')->with('msg', 'Khôi phục thành công');
     }
 }

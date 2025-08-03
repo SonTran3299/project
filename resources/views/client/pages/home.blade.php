@@ -81,21 +81,30 @@
         <div class="row px-xl-5 pb-3">
             @foreach ($categoryDemo as $data)
                 <div class="col-lg-4 col-md-6 pb-1">
-                    <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                        @if (array_key_exists($data->id, $productCounts))
-                            {{ $productCounts[$data->id] }} sản phẩm
-                        @else
-                            0 sản phẩm
-                        @endif
-                        <form action="{{ route('client.shop') }}" method="get">
-                            <button type="submit" class="btn cat-img position-relative overflow-hidden mb-3">
-                                <input type="hidden" name="category" value="{{ $data->slug }}">
-                                <img class="img-fluid"
-                                    src="{{ $data->image !== null ? asset("images/category/$data->image") : asset('client_asset/img/cat-demo.png') }}"
-                                    alt="">
-                            </button>
-                        </form>
-                        <h5 class="font-weight-semi-bold m-0">{{ Str::title($data->name) }}</h5>
+                    <div class="cat-item d-flex flex-column border mb-4 h-100" style="padding: 30px;">
+                        <div class="category-top-content d-flex flex-column align-items-center justify-content-center mb-3"
+                            style="min-height: 180px;">
+                            <p class="mb-2">
+                                @if (array_key_exists($data->id, $productCounts))
+                                    {{ $productCounts[$data->id] }} sản phẩm
+                                @else
+                                    0 sản phẩm
+                                @endif
+                            </p>
+                            <form action="{{ route('client.shop') }}" method="get" class="w-100 text-center">
+                                <button type="submit" class="btn cat-img position-relative overflow-hidden mb-3"
+                                    style="height: 240px; width: 240px; padding: 0">
+                                    <input type="hidden" name="category" value="{{ $data->slug }}">
+                                    <img class="img-fluid h-100 w-100" style="object-fit: cover;"
+                                        src="{{ $data->image !== null ? asset("images/category/$data->image") : asset('client_asset/img/cat-demo.png') }}"
+                                        alt="{{ $data->name }}">
+                                </button>
+                            </form>
+                        </div>
+
+                        <h5 class="font-weight-semi-bold m-0 text-truncate-single-line text-center">
+                            {{ Str::title($data->name) }}
+                        </h5>
                     </div>
                 </div>
             @endforeach
@@ -138,30 +147,7 @@
         <div class="row px-xl-5 pb-3">
             @foreach ($outstandingProducts as $data)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                    <div class="card product-item border-0 mb-4">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100 rounded"
-                                src="{{ $data->main_image !== null ? asset("images/product/main_image/$data->main_image") : asset('images/product/default-product-image.jpg') }}"
-                                alt="{{ $data->name }}">
-                            @if ($data->discount_percentage > 0)
-                                <span class="badge badge-danger position-absolute mt-2 mr-2"
-                                    style="top: 0; right: 0; z-index: 10;">
-                                    {{ round($data->discount_percentage * 100) }}%
-                                </span>
-                            @endif
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">{{ $data->name }}</h6>
-                            <div class="d-flex justify-content-center">
-                                @php
-                                    $reducePrice = $data->price * (1 - $data->discount_percentage);
-                                @endphp
-                                <h6>{{ Number::currency($reducePrice) }}</h6>
-                                <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
-                            </div>
-                        </div>
-                        @include('client.blocks.product-button', ['id' => $data->id])
-                    </div>
+                    @include('client.blocks.product-card', ['datas' => $data])
                 </div>
             @endforeach
         </div>
@@ -172,7 +158,9 @@
     <div class="container-fluid bg-secondary my-5">
         <div class="row justify-content-md-center py-5 px-xl-5">
             <div class="col-md-6 col-12 py-5">
-                <div class="text-center mb-2 pb-2">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. At provident quidem quae dolorum commodi? Corporis
+                doloribus vitae nisi sed provident vel esse. Quae accusantium tempore repellat et quod sequi exercitationem!
+                {{-- <div class="text-center mb-2 pb-2">
                     <h2 class="section-title px-5 mb-3"><span class="bg-secondary px-2">Stay Updated</span></h2>
                     <p>Amet lorem at rebum amet dolores. Elitr lorem dolor sed amet diam labore at justo ipsum eirmod duo
                         labore labore.</p>
@@ -184,7 +172,7 @@
                             <button class="btn btn-primary px-4">Đăng ký ngay</button>
                         </div>
                     </div>
-                </form>
+                </form> --}}
             </div>
         </div>
     </div>
@@ -195,34 +183,10 @@
         <div class="text-center mb-4">
             <h2 class="section-title px-5"><span class="px-2">Sản phẩm mới</span></h2>
         </div>
-
         <div class="row px-xl-5 pb-3">
             @foreach ($newProduct as $data)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                    <div class="card product-item border-0 mb-4">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100 rounded"
-                                src="{{ $data->main_image !== null ? asset("images/product/main_image/$data->main_image") : asset('images/product/default-product-image.jpg') }}"
-                                alt="{{ $data->name }}">
-                            @if ($data->discount_percentage > 0)
-                                <span class="badge badge-danger position-absolute mt-2 mr-2"
-                                    style="top: 0; right: 0; z-index: 10;">
-                                    {{ round($data->discount_percentage * 100) }}%
-                                </span>
-                            @endif
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">{{ $data->name }}</h6>
-                            <div class="d-flex justify-content-center">
-                                @php
-                                    $reducePrice = $data->price * (1 - $data->discount_percentage);
-                                @endphp
-                                <h6>{{ Number::currency($reducePrice) }}</h6>
-                                <h6 class="text-muted ml-2"><del>{{ Number::currency($data->price) }}</del></h6>
-                            </div>
-                        </div>
-                        @include('client.blocks.product-button', ['id' => $data->id])
-                    </div>
+                    @include('client.blocks.product-card', ['datas' => $data])
                 </div>
             @endforeach
         </div>

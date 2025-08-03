@@ -39,9 +39,6 @@ Route::prefix('admin/product_category')
     });
 
 //---Product---
-// Route::get('/admin/product/create', function(){
-//     return view('admin.pages.product.create');
-// })
 Route::prefix('admin/product')
     ->controller(ProductController::class)
     ->name('admin.product.')
@@ -64,6 +61,7 @@ Route::prefix('admin/product')
 Route::get('admin/user', [UserController::class, 'list'])->name('admin.user.list')->middleware(CheckIsAdmin::class);
 Route::get('admin/user/detail/{user}', [UserController::class, 'detail'])->name('admin.user.detail')->middleware(CheckIsAdmin::class);
 
+//---Order---
 Route::prefix('admin/order')
     ->controller(OrderController::class)
     ->name('admin.order.')
@@ -74,8 +72,10 @@ Route::prefix('admin/order')
         Route::post('update-order-status/{order}', 'updateOrderStatus')->name('update-order-status');
     });
 
+//---Dashboard---
 Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard')->middleware(CheckIsAdmin::class);
 
+//---Feedback---
 Route::get('admin/feedback', [FeedbackController::class, 'index'])->name('admin.feedback')->middleware(CheckIsAdmin::class);
 Route::get('admin/feedback/detail/{contact}', [FeedbackController::class, 'detail'])->name('admin.feedback.detail')->middleware(CheckIsAdmin::class);
 Route::post('admin/feedback/answer/{contact}', [FeedbackController::class, 'answer'])->name('admin.feedback.answer')->middleware(CheckIsAdmin::class);

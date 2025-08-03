@@ -99,11 +99,12 @@
                 imageInput.click();
             });
 
+            // Chọn ảnh mới
             imageInput.on('change', function() {
                 const file = this.files[0]; 
 
                 if (file) {
-                    const reader = new FileReader();
+                    const reader = new FileReader(); // API của trình duyệt cho phép đọc file
 
                     reader.onload = function(e) {
                         currentMainImage.attr('src', e.target.result);

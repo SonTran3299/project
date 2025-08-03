@@ -8,6 +8,11 @@
             <a href="" class="dropdown-item">Baby's Dresses</a>
         </div>
     </div> --}}
+    <a href="{{ route('client.shop') }}" class="btn text-left nav-item nav-link">
+        <i class="fa fa-arrow-right"></i>
+        Xem toàn bộ sản phẩm
+        <i class="fa fa-arrow-left"></i>
+    </a>
     @if (isset($categoryList) && $categoryList->count() > 0)
         @foreach ($categoryList as $category)
             <form action="{{ route('client.shop') }}" method="get">

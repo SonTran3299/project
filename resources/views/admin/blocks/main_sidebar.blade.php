@@ -18,13 +18,10 @@
             </div>
         </div>
 
-
-
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item has-treeview">
-                    {{-- tắt active sau --}}
                     <a href="{{ route('admin.dashboard') }}"
                         class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -83,7 +80,7 @@
 
                         <li class="nav-item">
                             <a href="{{ route('admin.feedback') }}"
-                                class="nav-link {{ Request::routeIs('admin.feedback.*') ? 'active' : '' }}">
+                                class="nav-link {{ Request::routeIs('admin.feedback*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Phản hồi</p>
                             </a>

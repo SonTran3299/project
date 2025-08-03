@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model
 {
+    const STATUS_NEW = 0;
     const STATUS_PROCESS = 1;
     const STATUS_SUCCESS = 2;
 
@@ -21,12 +23,18 @@ class Contact extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getStatusToTextAttribute()
+    protected function statusToText(): Attribute
     {
-        switch ($this->status) {
-            case self::STATUS_PROCESS: return 'Đang xử lý';
-            case self::STATUS_SUCCESS: return 'Đã phản hồi';
-            default: return 'Mới';
-        }
+        return Attribute::make(
+            get: function () {
+                $statusArray = [
+                    self::STATUS_NEW => 'Mới',
+                    self::STATUS_PROCESS => 'Đang xử lý',
+                    self::STATUS_SUCCESS => 'Đã phản hồi'
+                ];
+
+                return $statusArray[$this->status] ?? 'Lỗi không xác định';
+            },
+        );
     }
 }

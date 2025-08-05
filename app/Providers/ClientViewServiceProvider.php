@@ -24,7 +24,7 @@ class ClientViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('client.*', function ($view) {
-            $view->with('categoryList', ProductCategory::orderBy('name', 'asc')->get());
+            $view->with('categoryList', ProductCategory::orderBy('name', 'asc')->where('status', '1')->get());
             $view->with('cartCount', Cart::where('user_id', Auth::id())->count());
         });
     }

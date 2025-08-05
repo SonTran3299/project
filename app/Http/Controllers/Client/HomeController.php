@@ -23,7 +23,7 @@ class HomeController extends Controller
     }
     public function loadCategoryHome()
     {
-        return ProductCategory::orderBy('id',  'desc')->take(6)->get();
+        return ProductCategory::orderBy('id',  'desc')->where('status', '1')->take(6)->get();
     }
 
     public function loadProductInCategory()

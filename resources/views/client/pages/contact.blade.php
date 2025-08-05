@@ -58,8 +58,7 @@
             </div>
             <div class="col-lg-5 mb-5">
                 <h5 class="font-weight-semi-bold mb-3">Liên hệ</h5>
-                <p>Justo sed diam ut sed amet duo amet lorem amet stet sea ipsum, sed duo amet et. Est elitr dolor elitr
-                    erat sit sit. Dolor diam et erat clita ipsum justo sed.</p>
+                <p>Quý khách có thể liên hệ trực tiếp qua zalo hoặc số điện thoại chăm sóc khách hàng.</p>
                 <div class="d-flex flex-column mb-3">
                     <h5 class="font-weight-semi-bold mb-3">Cửa hàng</h5>
                     <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>Đường 123, phường 456, TP HCM

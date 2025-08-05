@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\CheckIsAdmin;
 use App\Models\ProductCategory;
@@ -79,3 +80,12 @@ Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admi
 Route::get('admin/feedback', [FeedbackController::class, 'index'])->name('admin.feedback')->middleware(CheckIsAdmin::class);
 Route::get('admin/feedback/detail/{contact}', [FeedbackController::class, 'detail'])->name('admin.feedback.detail')->middleware(CheckIsAdmin::class);
 Route::post('admin/feedback/answer/{contact}', [FeedbackController::class, 'answer'])->name('admin.feedback.answer')->middleware(CheckIsAdmin::class);
+
+//---Sale---
+Route::prefix('admin/report')
+    ->controller(ReportController::class)
+    ->name('admin.report.')
+    ->middleware(CheckIsAdmin::class)
+    ->group(function () {
+        Route::get('sale-summary', 'saleSummary')->name('saleSummary');
+    });

@@ -43,7 +43,7 @@ class ClientController extends Controller
         if ($searchQuery) {
             $query->where('name', 'LIKE', "%$searchQuery%");
         }
-        $dataProduct = $query->paginate($itemPerPage);
+        $dataProduct = $query->where('status', 1)->paginate($itemPerPage);
 
         return view('client.pages.shop', ['dataProduct' => $dataProduct]);
     }

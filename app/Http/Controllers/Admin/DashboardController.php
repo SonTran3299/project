@@ -23,7 +23,7 @@ class DashboardController extends Controller
                 'countOrder' => self::countNewOrder(),
                 'countUser' => User::count() - 1,
                 'successRate' => self::caculateSuccessfulDeliveryRate(),
-                'sales' => self::caculateIncome($month, $year),
+                'reportMonthly' => $this->getChartDataForLastThreeMonths(),
             ]
         );
     }
@@ -62,30 +62,72 @@ class DashboardController extends Controller
         return round($rate, 2);
     }
 
-    protected static function caculateIncome(string|int $month, string|int $year): array
+    protected function getMonthlyFinancialSummary(string|int $month, string|int $year): array
     {
+        $month = (int)$month;
+        $year = (int)$year;
+
         $startDate = Carbon::createFromDate($year, $month, 1)->startOfDay();
         $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay();
 
-        $startDate = Carbon::parse($startDate)->startOfDay();
-        $endDate = Carbon::parse($endDate)->endOfDay();
-        $products = OrderItem::whereBetween('updated_at', [$startDate, $endDate])->get();
+        // Lấy các mục đơn hàng đã hoàn thành trong khoảng thời gian này
+        $products = OrderItem::whereHas('order', function ($query) { 
+            $query->where('status', '!=', 5); 
+        })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
 
-        $gross_sale = 0;
-        $discount = 0;
-        $net_sale = 0;
+        $grossSale = 0;
+        $discountAmount = 0;
+
         foreach ($products as $product) {
-            $gross_sale += $product->price * $product->quantity;
-            $discount += $product->price * $product->quantity * $product->discount_percentage;
+            $grossSale += $product->price * $product->quantity;
+            $discountAmount += ($product->price * $product->quantity) * $product->discount_percentage;
         }
 
-        $net_sale = $gross_sale - $discount;
+        $operatingExpense = 0; // Các khoản chi phí (chưa tính)
 
-        $expense = $discount + 0; //các khoản chi khác
+        $totalExpense = $operatingExpense + $discountAmount;
+
+        $netSale = $grossSale - $totalExpense;
+
         return [
-            'netSale' => $net_sale,
-            'grossSale' => $gross_sale,
-            'expense' => $expense
+            'grossSale' => $grossSale,
+            'netSale' => $netSale,
+            'expense' => $totalExpense 
         ];
+    }
+
+    protected function getChartDataForLastThreeMonths(): array
+    {
+        $chartData = [['Tháng', 'GROSS', 'NET', 'CHI PHÍ']];
+        $today = Carbon::now();
+
+        // Lấy dữ liệu cho 3 tháng gần nhất (gồm tháng hiện tại)
+        for ($i = 0; $i < 3; $i++) {
+            $date = $today->copy()->subMonths($i); 
+
+            $month = $date->month;
+            $year = $date->year;
+
+            $monthlySummary = $this->getMonthlyFinancialSummary($month, $year);
+
+            $label = ucfirst($date->monthName) . ' ' . $year;
+
+            // Thêm dữ liệu vào mảng chartData
+            $chartData[] = [
+                $label,
+                $monthlySummary['grossSale'],
+                $monthlySummary['netSale'],
+                $monthlySummary['expense']
+            ];
+        }
+
+        // Đảo ngược mảng (trừ header) để biểu đồ hiển thị theo thứ tự thời gian (tháng cũ nhất đến tháng mới nhất)
+        $header = array_shift($chartData); // Tách header
+        $chartData = array_reverse($chartData); // Đảo ngược dữ liệu
+        array_unshift($chartData, $header); // Đặt header lên đầu mảng
+
+        return $chartData;
     }
 }

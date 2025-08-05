@@ -99,13 +99,17 @@
         <div class="card-header">
             <h3 class="card-title">
                 <i class="fas fa-chart-line mr-1"></i>
-                Doanh thu
+                Doanh thu theo tháng
             </h3>
         </div>
-        <div class="card-body">
+        {{-- <div class="card-body">
             <div>GROSS: {{ Number::currency($sales['grossSale']) }}</div>
             <div>NET: {{ Number::currency($sales['netSale']) }}</div>
             <div>Chi phí phát sinh: {{ Number::currency($sales['expense']) }}</div>
+        </div> --}}
+        <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div id="monthly_sale_report" style="width: 800px; height: 500px;"></div>
+            </div>
         </div>
     </div>
 @endsection
@@ -134,5 +138,24 @@
 
             chart.draw(data, options);
         }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(@json($reportMonthly));
+
+        var options = {
+          chart: {
+            title: 'Doanh thu',
+            subtitle: 'Gross, Net, và Chi phí',
+          }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('monthly_sale_report'));
+
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
     </script>
 @endsection

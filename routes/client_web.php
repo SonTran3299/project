@@ -39,6 +39,7 @@ Route::prefix('user')
     ->group(function () {
         Route::get('cart', 'index')->name('cart');
         Route::post('add-item-to-cart/{product}', 'addToCart')->name('add-item-to-cart');
+        Route::post('update-cart', 'updateCart')->name('update-cart');
         Route::post('add-to-cart-from-detail/{product}', 'addToCartFromDetail')->name('add-to-cart-from-detail');
         Route::get('checkout', 'checkout')->name('checkout');
         Route::post('place-order', 'placeOrder')->name('place-order');

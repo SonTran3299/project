@@ -14,9 +14,9 @@
                 <img class="img-fluid" src="{{ asset('client_asset/img/carousel-1.jpg') }}" alt="Image">
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3" style="max-width: 700px;">
-                        <h4 class="text-light text-uppercase font-weight-medium mb-3">Giảm thêm 10% cho khách hàng mới</h4>
+                        <h4 class="text-light text-uppercase font-weight-medium mb-3">Sách nổi bật trong tháng</h4>
                         <h3 class="display-4 text-white font-weight-semi-bold mb-4">Sách</h3>
-                        <a href="" class="btn btn-light py-2 px-3">Mua ngay</a>
+                        <a href="{{ route('client.shop') }}" class="btn btn-light py-2 px-3">Mua ngay</a>
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                     <div class="p-3" style="max-width: 700px;">
                         <h4 class="text-light text-uppercase font-weight-medium mb-3">Ưu đãi tháng 8</h4>
                         <h3 class="display-4 text-white font-weight-semi-bold mb-4">Giá ưu đãi bất ngờ</h3>
-                        <a href="" class="btn btn-light py-2 px-3">Mua ngay</a>
+                        <a href="{{ route('client.shop') }}" class="btn btn-light py-2 px-3">Mua ngay</a>
                     </div>
                 </div>
             </div>

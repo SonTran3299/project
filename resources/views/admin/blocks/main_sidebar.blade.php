@@ -32,12 +32,21 @@
                 </li>
             </ul>
         </nav>
+
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
-                <li class="nav-item has-treeview menu-open">
-                    <a href="#" class="nav-link {{ Request::routeIs('admin.dashboard') ? '' : 'active' }}">
+                @php
+                    $managementMenuOpen =
+                        Request::routeIs('admin.user.*') ||
+                        Request::routeIs('admin.product_category.*') ||
+                        Request::routeIs('admin.product.*') ||
+                        Request::routeIs('admin.order.*') ||
+                        Request::routeIs('admin.feedback*');
+                @endphp
+                <li class="nav-item has-treeview {{ $managementMenuOpen ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Quản lý
@@ -90,6 +99,39 @@
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
+        <!-- Doanh thu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                @php
+                    $managementMenuOpen =
+                        Request::routeIs('admin.report.saleSummary') ||
+                        Request::routeIs('admin.product_category.*') ||
+                        Request::routeIs('admin.product.*') ||
+                        Request::routeIs('admin.order.*') ||
+                        Request::routeIs('admin.feedback*');
+                @endphp
+                <li class="nav-item has-treeview {{ $managementMenuOpen ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Doanh thu
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.report.saleSummary') }}"
+                                class="nav-link {{ Request::routeIs('admin.report.saleSummary') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tổng doanh thu</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.Doanh thu -->
     </div>
     <!-- /.sidebar -->
 </aside>

@@ -1,6 +1,6 @@
 @extends('client.layout.master')
 @section('custom-style')
-    <style>
+    {{-- <style>
         .rating-stars i {
             cursor: pointer;
             font-size: 24px;
@@ -20,7 +20,7 @@
         .rating-stars i:hover~i {
             color: #ccc;
         }
-    </style>
+    </style> --}}
 @endsection
 @section('nav-other-pages')
     <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
@@ -95,7 +95,7 @@
                             <small class="far fa-star"></small>
                         @endfor
                     </div>
-                    <small class="pt-1">({{ 1 + $comments->count() }} đánh giá)</small>
+                    <small class="pt-1">({{ $comments->count() }} đánh giá)</small>
                 </div>
                 <div class="mb-4">
                     @php
@@ -103,6 +103,10 @@
                     @endphp
                     <span class="h3 text-danger font-weight-bold mr-2">{{ Number::currency($reducePrice) }}</span>
                     <span class="font-weight-semi-bold"><del>{{ Number::currency($data->price) }}</del></span>
+                </div>
+                <div class="mb-4">
+                    <span class="h4 mr-2">Còn: </span>
+                    <span class="font-weight-bold">{{ $data->stock }} sản phẩm</span>
                 </div>
                 {{-- size --}}
                 {{-- <div class="d-flex mb-3">
@@ -166,20 +170,28 @@
                                 </button>
                             </div>
                             <input type="text" class="form-control bg-secondary text-center" name="quantity"
-                                value="1">
+                                id="quantityInput" value="1" step="1" data-stock="{{ $data->stock }}">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-primary btn-plus">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i>
-                            Thêm vào giỏ
+
+                        <button type="submit" class="btn btn-primary px-3" id="addToCartButton">
+                            <i class="fa fa-shopping-cart mr-1"></i>Thêm vào giỏ
                         </button>
                     </div>
+                    @if ($data->stock <= 0)
+                        <p class="text-danger mt-2">Sản phẩm hiện đã hết hàng.</p>
+                    @elseif($data->stock < 1)
+                        <p class="text-warning mt-2">Sản phẩm sắp hết hàng (còn {{ $data->stock }} sản phẩm).</p>
+                    @endif
+                    <p id="stockWarning" class="text-danger mt-2" style="display: none;">Số lượng bạn chọn vượt quá số lượng
+                        tồn kho.</p>
                 </form>
                 <div class="d-flex pt-2">
-                    <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Chia sẻ:</p>
                     <div class="d-inline-flex">
                         <a class="text-dark px-2" href="">
                             <i class="fab fa-facebook-f"></i>
@@ -202,9 +214,9 @@
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
                     <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Chi tiết sản phẩm</a>
-                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Mô tả sản phẩm</a>
+                    {{-- <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Mô tả sản phẩm</a> --}}
                     <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Đánh giá
-                        ({{ 1 + $comments->count() }})</a>
+                        ({{ $comments->count() }})</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
@@ -212,32 +224,16 @@
                         {!! $data->description !!}
                     </div>
 
-                    <div class="tab-pane fade" id="tab-pane-2">
+                    {{-- <div class="tab-pane fade" id="tab-pane-2">
                         <h4 class="mb-3">Mô tả sản phẩm</h4>
                         {{ $data->description }}
-                    </div>
+                    </div> --}}
                     {{-- Comment --}}
                     <div class="tab-pane fade" id="tab-pane-3">
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-4">{{ 1 + $comments->count() }} đánh giá cho sản phẩm
+                                <h4 class="mb-4">{{ $comments->count() }} đánh giá cho sản phẩm
                                     "{{ $data->name }}"</h4>
-                                <div class="media mb-4">
-                                    <img src="{{ asset('user_asset/images/user1.svg') }}" alt="Image"
-                                        class="img-fluid mr-3 mt-1" style="width: 45px;">
-                                    <div class="media-body">
-                                        <h6>John Doe<small> - <i>01 Jun 2025</i></small></h6>
-                                        <div class="text-primary mb-2">
-                                            <i class="fas fa-star "></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
-                                        <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no
-                                            at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
-                                    </div>
-                                </div>
                                 @foreach ($comments as $comment)
                                     <div class="media mb-4">
                                         <img src="{{ asset('client_asset/img/user.jpg') }}" alt="Image"
@@ -342,9 +338,67 @@
     <!-- Products End -->
 @endsection
 @section('my-js')
-    <script src="{{ asset('client_asset/js/addToCart.js') }}"></script>
     <script>
         $(document).ready(function() {
+            var quantityInput = $('#quantityInput');
+            var addToCartButton = $('#addToCartButton');
+            var stockWarning = $('#stockWarning');
+            var maxStock = parseInt(quantityInput.data('stock'));
+
+            function checkStock() {
+                var currentQuantity = parseInt(quantityInput.val());
+
+                if (maxStock <= 0) {
+                    addToCartButton.prop('disabled', true);
+                    stockWarning.text('Sản phẩm hiện đã hết hàng.').show();
+                    quantityInput.val(0);
+                    quantityInput.prop('disabled', true);
+                    $('.btn-minus, .btn-plus').prop('disabled', true);
+                    return;
+                }
+
+                if (currentQuantity < 1) {
+                    quantityInput.val(1);
+                    currentQuantity = 1;
+                }
+
+                if (currentQuantity > maxStock) {
+                    addToCartButton.prop('disabled', true);
+                    stockWarning.text('Số lượng bạn chọn vượt quá số lượng tồn kho hiện có (' + maxStock + ').')
+                        .show();
+                } else {
+                    addToCartButton.prop('disabled', false);
+                    stockWarning.hide();
+                }
+            }
+
+            checkStock();
+            quantityInput.on('change keyup', function() {
+                checkStock();
+            });
+
+            $('.btn-minus').on('click', function() {
+                var value = parseInt(quantityInput.val());
+                if (value > 1) {
+                    quantityInput.val(value - 1);
+                }
+                checkStock();
+            });
+
+            $('.btn-plus').on('click', function() {
+                var value = parseInt(quantityInput.val());
+                if (value < maxStock) {
+                    quantityInput.val(value + 1);
+                } else {
+                    quantityInput.val(maxStock);
+                    stockWarning.text('Số lượng không thể vượt quá số lượng tồn kho hiện có (' + maxStock +
+                        ').').show();
+                }
+                checkStock();
+            });
+
+
+            // Đánh giá
             const $ratingStarsContainer = $('.rating-stars');
             const $hiddenRatingInput = $('#selected-rating');
 

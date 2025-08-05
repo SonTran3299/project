@@ -17,7 +17,7 @@ return new class extends Migration
             $table->float('price', 2);
             $table->float('discount_percentage')->default(0);       
             $table->integer('quantity');
-            $table->string('main-image')->nullable();
+            $table->string('main_image')->nullable();
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('order');
             $table->unsignedBigInteger('product_id');

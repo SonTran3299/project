@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -16,7 +16,9 @@
     <script src="asset('vnpay_asset/jquery-1.11.3.min.js')"></script>
 </head>
 
-<body>
+<body> --}}
+@extends('client.layout.master')
+@section('main-content')
     <div class="container">
         <div class="header clearfix">
             <h3 class="text-muted">KẾT QUẢ THANH TOÁN VNPAY</h3>
@@ -70,6 +72,8 @@
             <p>&copy; VNPAY {{ date('Y') }}</p>
         </footer>
     </div>
-</body>
+@endsection
 
-</html>
+{{-- </body>
+
+</html> --}}

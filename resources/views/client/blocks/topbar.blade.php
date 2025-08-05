@@ -9,7 +9,7 @@
                 <a class="text-dark" href="">Support</a> --}}
             </div>
         </div>
-        <div class="col-lg-6 text-center text-lg-right">
+        {{-- <div class="col-lg-6 text-center text-lg-right">
             <div class="d-inline-flex align-items-center">
                 <a class="text-dark px-2" href="">
                     <i class="fab fa-facebook-f"></i>
@@ -27,7 +27,7 @@
                     <i class="fab fa-youtube"></i>
                 </a>
             </div>
-        </div>
+        </div> --}}
     </div>
     <div class="row align-items-center py-3 px-xl-5">
         <div class="col-lg-3 d-none d-lg-block">
@@ -99,12 +99,12 @@
                         </span>
                     </a>
                 </div> --}}
-                @auth {{-- Bắt đầu khối chỉ hiển thị khi đã đăng nhập --}}
+                @auth 
                     <div>
-                        <a href="" class="btn border">
+                        {{-- <a href="" class="btn border">
                             <i class="fas fa-heart text-primary"></i>
                             <span class="badge">0</span>
-                        </a>
+                        </a> --}}
                         <a href="{{ route('client.cart') }}" class="btn border">
                             <i class="fas fa-shopping-cart text-primary"></i>
                             <span class="badge" id="cart-item-count">

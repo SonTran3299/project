@@ -72,6 +72,48 @@ class CartController extends Controller
         return response()->json(['message' => 'Thêm thành công']);
     }
 
+    public function updateCart(Request $request)
+    {
+        $userId = Auth::id();
+        $cartItemsJson = $request->input('cart_items_data');
+        if (empty($cartItemsJson)) {
+            return redirect()->back()->with('error', 'Không có dữ liệu giỏ hàng để cập nhật.');
+        }
+        $cartItems = json_decode($cartItemsJson, true);
+        if (!is_array($cartItems)) {
+            return redirect()->back()->with('error', 'Dữ liệu giỏ hàng không hợp lệ.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($cartItems as $item) {
+                $cartId = $item['id'];
+                $newQuantity = $item['quantity'];
+
+                $cartEntry = Cart::where('id', $cartId)->where('user_id', $userId)->first();
+
+                if ($cartEntry) {
+                    if ($newQuantity > $cartEntry->product->stock) {
+                        DB::rollBack();
+                        return redirect()->back()->with('error', 'Số lượng sản phẩm "' . $cartEntry->product->name . '" vượt quá tồn kho hiện có (' . $cartEntry->product->stock . '). Vui lòng kiểm tra lại giỏ hàng.');
+                    }
+                    if ($newQuantity < 1) {
+                        $newQuantity = 1;
+                    }
+                    $cartEntry->quantity = $newQuantity;
+                    $cartEntry->save();
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('client.checkout')->with('msg', 'Giỏ hàng đã được cập nhật thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('smg', 'Đã xảy ra lỗi khi cập nhật giỏ hàng. Vui lòng thử lại.');
+        }
+    }
+
     public function addToCartFromDetail(Product $product, Request $request)
     {
         self::insertOrUpdateCart(Auth::id(), $product->id, $request->quantity);
@@ -275,7 +317,7 @@ class CartController extends Controller
         try {
             if ($secureHash == $request->vnp_SecureHash) {
                 if ($request->vnp_ResponseCode == '00') {
-                    $orderPaymentMethod->status = 'đã thanh toán'; 
+                    $orderPaymentMethod->status = 'đã thanh toán';
                     $orderPaymentMethod->save();
 
                     foreach ($order->orderItems as $orderItem) {
@@ -290,19 +332,19 @@ class CartController extends Controller
 
                     Mail::to('tvs32.ys@gmail.com')->send(new CustomerEmailTemplate($order, $user));
 
-                    DB::commit(); 
+                    DB::commit();
                     return view('vnpay.vnpay-return', ['data' => $data, 'secureHash' => $secureHash]);
                 } else {
                     $orderPaymentMethod->status = 'thất bại';
                     $orderPaymentMethod->save();
 
-                    DB::commit(); 
-                    
+                    DB::commit();
+
                     return redirect()->route('client.order-history')
                         ->with('error', 'Thanh toán VNPAY thất bại. Vui lòng thử lại hoặc chọn phương thức khác.');
                 }
             } else {
-                $orderPaymentMethod->status = 'Lỗi'; 
+                $orderPaymentMethod->status = 'Lỗi';
                 $orderPaymentMethod->save();
 
                 DB::commit();
@@ -310,9 +352,9 @@ class CartController extends Controller
                     ->with('error', 'Lỗi xác thực thanh toán. Vui lòng liên hệ hỗ trợ.');
             }
         } catch (\Exception $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return redirect()->route('client.order-history')
                 ->with('error', 'Có lỗi khi xử lý thanh toán. Vui lòng liên hệ hỗ trợ.');
-        }     
+        }
     }
 }

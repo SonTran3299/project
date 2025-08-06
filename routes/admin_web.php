@@ -56,6 +56,8 @@ Route::prefix('admin/product')
         Route::get('detail/{product}', 'detail')->name('detail');
 
         Route::post('update/{product}', 'update')->name('update');
+
+        Route::post('restore/{product}', 'restore')->name('restore');
     });
 
 //---User---

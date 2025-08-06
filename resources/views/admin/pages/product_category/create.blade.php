@@ -32,13 +32,16 @@
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
-                        <label for="status">Trạng thái</label>
-                        <div class="form-group">
-                            <select id="status" name="status" class="form-control">
-                                <option value="">---Chọn---</option>
-                                <option {{ old('status') === '1' ? 'selected' : '' }} value="1">Hiện</option>
-                                <option {{ old('status') === '0' ? 'selected' : '' }} value="0">Ẩn</option>
-                            </select>
+                        <label>Trạng thái</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="status_active" value="1"
+                                {{ old('status') === '1' || old('status') === null ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_active">Hiện</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="status_inactive"
+                                value="0" {{ old('status') === '0' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_inactive">Ẩn</label>
                         </div>
                     </div>
                     @error('status')

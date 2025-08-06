@@ -12,8 +12,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $newProduct = Product::orderBy('id',  'desc')->take(8)->get();
-        $outstandingProducts = Product::orderBy('discount_percentage',  'desc')->take(8)->get();
+        $newProduct = Product::orderBy('id',  'desc')->where('status', '!=', 0)->take(8)->get();
+        $outstandingProducts = Product::orderBy('discount_percentage',  'desc')->where('status', '!=', 0)->take(8)->get();
         return view('client.pages.home', [
             'newProduct' => $newProduct,
             'outstandingProducts' => $outstandingProducts,

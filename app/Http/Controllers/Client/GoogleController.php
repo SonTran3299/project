@@ -31,7 +31,7 @@ class GoogleController extends Controller
             ]
         );
 
-        Auth::login($user);
+        Auth::login($user, true);
 
         return redirect(route('admin.product_category.list', absolute: false));
     }

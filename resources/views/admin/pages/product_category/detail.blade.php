@@ -12,8 +12,8 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="main-image" class="mr-4">Ảnh</label>
-                        <img src="{{ asset("images/category/$data->image") }}" alt="{{ $data->name }}"
-                            style="width:160px" class="mr-4" id="current-main-image"
+                        <img src="{{ asset("images/category/$data->image") }}" alt="{{ $data->name }}" style="width:160px"
+                            class="mr-4" id="current-main-image"
                             data-original-src="{{ asset("images/category/$data->image") }}">
 
                         <button type="button" class="btn btn-secondary" id="change-main-image-btn">
@@ -46,14 +46,18 @@
                     @error('slug')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
+
                     <div class="form-group">
-                        <label for="status">Trạng thái</label>
-                        <div class="form-group">
-                            <select id="status" name="status" class="form-control">
-                                <option value="">---Chọn---</option>
-                                <option {{ $data->status == '1' ? 'selected' : '' }} value="1">Hiện</option>
-                                <option {{ $data->status == '0' ? 'selected' : '' }} value="0">Ẩn</option>
-                            </select>
+                        <label>Trạng thái</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="status_active" value="1"
+                                {{ $data->status == '1' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_active">Hiện</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="status_inactive"
+                                value="0" {{ $data->status == '0' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_inactive">Ẩn</label>
                         </div>
                     </div>
                     @error('status')
@@ -101,7 +105,7 @@
 
             // Chọn ảnh mới
             imageInput.on('change', function() {
-                const file = this.files[0]; 
+                const file = this.files[0];
 
                 if (file) {
                     const reader = new FileReader(); // API của trình duyệt cho phép đọc file
@@ -121,8 +125,8 @@
             cancelChangeBtn.on('click', function(e) {
                 e.preventDefault();
                 currentMainImage.attr('src', originalImageSrc);
-                
-                imageInput.val(''); 
+
+                imageInput.val('');
 
                 cancelChangeBtn.addClass('d-none');
             });

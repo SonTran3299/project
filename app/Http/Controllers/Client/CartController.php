@@ -45,29 +45,44 @@ class CartController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $cart = Cart::with('product')->where('user_id', $userId)->get();
-        $caculatePrice = $this->caculateTotalOrder($cart, 500000, 15000);
-        return view('client.pages.cart', ['cart' => $cart, 'caculatePrice' => $caculatePrice]);
+        $cartQuery = Cart::with(['product' => function ($query) {
+            $query->withTrashed(); // <-- QUAN TRỌNG: Tải cả sản phẩm đã soft delete
+        }])->where('user_id', $userId);
+
+        $cartItems = $cartQuery->get();
+
+        $cartWithActiveProducts = $cartQuery->whereHas('product', function ($query) {
+            $query->where('status', '!=', 0);
+        })->get();
+
+        $unactiveCartItems = $cartItems->filter(function ($cartItem) {
+            if (!$cartItem->product) {
+                return true;
+            }
+            return $cartItem->product->status === 0 || $cartItem->product->deleted_at !== null;
+        });
+
+        $caculatePrice = $this->caculateTotalOrder($cartWithActiveProducts, 500000, 15000);
+        return view(
+            'client.pages.cart',
+            [
+                'cart' => $cartWithActiveProducts,
+                'caculatePrice' => $caculatePrice,
+                'unactiveCartItems' => $unactiveCartItems,
+                'unactiveItemCount' => $unactiveCartItems->count()
+            ]
+        );
     }
 
     public function addToCart(Product $product)
     {
-        $cart = session()->get('cart', []);
-        $cart[$product->id] = [
-            'name' => $product->name,
-            'price' => $product->price,
-            'quantity' => ($cart[$product->id]['quantity'] ?? 0) + 1
-        ];
-
-        session()->put('cart', $cart);
-
-        $sessionCart = session()->get('cart', []);
-        foreach ($sessionCart as $productId => $item) {
-            $quantity = $item['quantity'];
-
-            self::insertOrUpdateCart(Auth::id(), $productId, $quantity);
-        }
-        session()->put('cart', []);
+        $userId = Auth::id();
+        $cartItem = Cart::firstOrNew([
+            'user_id' => $userId,
+            'product_id' => $product->id,
+        ]);
+        $cartItem->quantity += 1;
+        $cartItem->save();
 
         return response()->json(['message' => 'Thêm thành công']);
     }
@@ -133,9 +148,13 @@ class CartController extends Controller
 
     public function placeOrder(Request $request)
     {
+        $userId = Auth::id();
+        if (!$userId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để đặt hàng.');
+        }
+
         try {
             DB::beginTransaction();
-            $userId = Auth::id();
             $cart = Cart::where('user_id', $userId)->with('product')->get();
 
             $caculatePrice = $this->caculateTotalOrder($cart, 500000, 15000);
@@ -171,11 +190,13 @@ class CartController extends Controller
 
             //Update phone and address of user
             $user = User::find($userId);
-            $user->phone = $request->phone;
-            $user->address = $request->address;
-            $user->save();
+            if ($user) {
+                $user->phone = $request->phone;
+                $user->address = $request->address;
+                $user->save();
+            }
 
-            DB::commit();
+            //DB::commit();
 
             if ($request->payment_method === 'vnpay') {
                 date_default_timezone_set('Asia/Ho_Chi_Minh');
@@ -227,24 +248,27 @@ class CartController extends Controller
                     $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
                 }
 
+                DB::commit();
                 return redirect()->to($vnp_Url);
-            }
-            Mail::to('tvs32.ys@gmail.com')->send(new CustomerEmailTemplate($order, $user));
+            } else {
+                Mail::to('tvs32.ys@gmail.com')->send(new CustomerEmailTemplate($order, $user));
+                //Gửi cho admin
+                //Mail::to('tvs32.ys@gmail.com')->send(new AdminEmailTemplate($order));
 
-            //Gửi cho admin
-            //Mail::to('tvs32.ys@gmail.com')->send(new AdminEmailTemplate($order));
-
-            foreach ($order->orderItems as $orderItem) {
-                $product = Product::find($orderItem->product_id);
-                $product->stock -= $orderItem->quantity;
-                $product->save();
+                foreach ($order->orderItems as $orderItem) {
+                    $product = Product::find($orderItem->product_id);
+                    $product->stock -= $orderItem->quantity;
+                    $product->save();
+                }
             }
             $check = Cart::where('user_id', $userId)->delete();
+            DB::commit();
+            return redirect()->route('client.order-history')->with('success', 'Đơn hàng của bạn đã được đặt thành công!');
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
             DB::rollBack();
+            throw new Exception($e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
         }
-        return redirect()->route('client.home');
     }
 
     public function deleteProductFromCart(Cart $product)
@@ -283,7 +307,7 @@ class CartController extends Controller
         $data = $request->all();
         $inputData = array();
 
-        foreach ($_GET as $key => $value) {
+        foreach ($request->query() as $key => $value) {
             if (substr($key, 0, 4) == "vnp_") {
                 $inputData[$key] = $value;
             }
@@ -305,7 +329,9 @@ class CartController extends Controller
         $vnp_HashSecret = env('VNPAY_HASHSECRET');
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
-        $user = Auth::user();
+        $user = Auth::user(); // Có thể null nếu session mất
+        $userId = $user ? $user->id : null; // Lấy ID nếu có
+
         $orderId = $request->vnp_TxnRef;
         $order = Order::find($orderId);
         $orderPaymentMethod = OrderPaymentMethod::where('order_id', $orderId)->first();
@@ -328,12 +354,15 @@ class CartController extends Controller
                         }
                     }
 
-                    Cart::where('user_id', $user->id)->delete();
+                    $check = Cart::where('user_id', $user->id)->delete();
 
-                    Mail::to('tvs32.ys@gmail.com')->send(new CustomerEmailTemplate($order, $user));
+                    if ($user) {
+                        Mail::to('tvs32.ys@gmail.com')->send(new CustomerEmailTemplate($order, $user));
+                    }
 
                     DB::commit();
-                    return view('vnpay.vnpay-return', ['data' => $data, 'secureHash' => $secureHash]);
+                    // return view('vnpay.vnpay-return', ['data' => $data, 'secureHash' => $secureHash]);
+                    return redirect()->route('client.order-history')->with('success', 'Thanh toán thành công!');
                 } else {
                     $orderPaymentMethod->status = 'thất bại';
                     $orderPaymentMethod->save();

@@ -27,10 +27,11 @@ class ProductController extends Controller
         [$column, $sort] = $arraySort;
 
         $itemPerPage = config('my-config.item_per_page');
+
         if (!$searchQuery) {
-            $datas = Product::orderBy($column,  $sort)->paginate($itemPerPage);
+            $datas = Product::withTrashed()->orderBy($column,  $sort)->paginate($itemPerPage);
         } else {
-            $datas = Product::where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->paginate($itemPerPage);
+            $datas = Product::withTrashed()->where('name', 'LIKE', "%$searchQuery%")->orderBy($column,  $sort)->paginate($itemPerPage);
         }
 
         return view('admin.pages.product.list', ['datas' => $datas]);
@@ -70,15 +71,6 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        $mainImage = $product->main_image;
-
-        if ($mainImage) {
-            $filePath = public_path('images/product/main_image/' . $mainImage);
-            if (File::exists($filePath)) {
-                File::delete($filePath);
-            }
-        }
-
         $msg = $product->delete() ? 'Xóa sản phẩm thành công' : 'Xóa sản phẩm thất bại';
         return redirect()->route('admin.product.list')->with('msg', $msg);
     }
@@ -116,8 +108,12 @@ class ProductController extends Controller
         $product->stock = $request->stock;
         $product->discount_percentage = $request->discount_percentage;
         $product->product_category_id = $request->product_category_id;
-        $product->status = $request->status;
         $product->main_image = $newMainImage;
+        if ($product->stock == 0) {
+            $product->status = 0; 
+        } else {
+            $product->status = $request->status ?? 1; 
+        }
         $check = $product->save() ? 'Cập nhật sản phẩm thành công' : 'Cập nhật sản phẩm thất bại';
 
         return redirect()->route('admin.product.list')->with('msg', $check);

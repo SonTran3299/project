@@ -108,15 +108,16 @@
                     @enderror
 
                     <div class="form-group">
-                        <label for="status">Tình trạng</label>
-                        <div class="form-group">
-                            <select id="status" name="status" class="form-control">
-                                <option value="">---Chọn---</option>
-                                <option {{ $data->status == '1' ? 'selected' : '' }} value="1">Hiện
-                                </option>
-                                <option {{ $data->status == '0' ? 'selected' : '' }} value="0">Ẩn
-                                </option>
-                            </select>
+                        <label>Tình trạng</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="status_active"
+                                value="1" {{ $data->status == '1' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_active">Hiện</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="status_inactive"
+                                value="0" {{ $data->status == '0' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_inactive">Ẩn</label>
                         </div>
                     </div>
                     @error('status')
@@ -162,7 +163,7 @@
             });
 
             mainImageInput.on('change', function() {
-                const file = this.files[0]; 
+                const file = this.files[0];
 
                 if (file) {
                     const reader = new FileReader();
@@ -182,8 +183,8 @@
             cancelChangeBtn.on('click', function(e) {
                 e.preventDefault();
                 currentMainImage.attr('src', originalImageSrc);
-                
-                mainImageInput.val(''); 
+
+                mainImageInput.val('');
 
                 cancelChangeBtn.addClass('d-none');
             });

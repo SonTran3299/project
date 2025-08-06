@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('google/redirect', [GoogleController::class, 'redirect'])->name('client.google.redirect');
-Route::get('google/callback', [GoogleController::class, 'callback'])->name('client.google.callback');
+Route::get('google/redirect', [GoogleController::class, 'redirect'])->name('client.google.redirect')->middleware('web');
+Route::get('google/callback', [GoogleController::class, 'callback'])->name('client.google.callback')->middleware('web');
 
 Route::get('/', [HomeController::class, 'index'])->name('client.home');
 

@@ -22,7 +22,6 @@
 
 @section('main-content')
     <div class="container-fluid pt-5">
-
         <div class="row px-xl-5">
             @if (!empty($cart) && count($cart) > 0)
                 <div class="col-lg-8 table-responsive mb-5">
@@ -41,7 +40,8 @@
                         <tbody class="align-middle">
                             @php $totalPrice = 0 @endphp
                             @foreach ($cart as $data)
-                                <tr class="cart-item-row" data-cart-id="{{ $data->id }}">
+                                <tr class="cart-item-row cart-item-row {{ $data->product && $data->product->status !== 0 ? 'active-cart-item' : 'inactive-cart-item' }}"
+                                    data-cart-id="{{ $data->id }}">
                                     <td class="align-middle text-left">
                                         <img src="{{ asset('images/product/main_image/' . $data->product->main_image) }}"
                                             alt="{{ $data->product->name }}" style="width: 50px;">
@@ -151,8 +151,43 @@
                     <h4 class="text-danger font-weight-bold">Giỏ hàng rỗng, hãy tiếp tục mua sắm</h4>
                 </div>
             @endif
+            @if ($unactiveItemCount !== 0)
+                <div class="row">
+                    <div class="col-lg-8 table-responsive mb-5">
+                        <h3>Có {{ $unactiveItemCount }} sản phẩm hết hàng trong giỏ</h3>
+                        <table class="table table-bordered text-center mb-0" style="table-layout: fixed; width:100%">
+                            <tbody class="align-middle">
+                                @php $totalPrice = 0 @endphp
+                                @foreach ($unactiveCartItems as $data)
+                                    <tr>
+                                        <td class="align-middle text-left">
+                                            <img src="{{ asset('images/product/main_image/' . $data->product->main_image) }}"
+                                                alt="{{ $data->product->name }}" style="width: 50px;">
+                                        </td>
+                                        <td class="align-middle text-left">
+                                            {{ $data->product->name }}
+                                        </td>
+                                        <td class="align-middle">
+                                            {{ Number::currency($data->product->price) }}
+                                        </td>
+                                        <td class="align-middle">
+                                            <form action="{{ route('client.delete-product', ['product' => $data->id]) }}"
+                                                method="post">
+                                                @csrf
+                                                <button class="btn btn-sm btn-primary"
+                                                    onclick="return confirm('Bạn có chắc muốn xóa sản phẩm ra khỏi giỏ hàng không?')">
+                                                    Bỏ khỏi giỏ hàng</i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
         </div>
-
     </div>
 @endsection
 @section('my-js')

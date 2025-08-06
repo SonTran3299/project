@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('product', function (Blueprint $table) {
             $table->id();
             $table->string('main_image')->nullable();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->unsignedInteger('price')->nullable();
             $table->unsignedInteger('stock')->nullable();
-            $table->unsignedInteger('status')->default(0);
+            $table->unsignedInteger('status')->default(1);
             $table->float('discount_percentage')->default(0);
             $table->unsignedBigInteger('product_category_id');
             $table->foreign('product_category_id')->references('id')->on('product_category');

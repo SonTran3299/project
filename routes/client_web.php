@@ -1,22 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\Client\DetailController;
 use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\HomeController;
-use App\Mail\TestEmailTemplate;
-use App\Models\Cart;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('google/redirect', [GoogleController::class, 'redirect'])->name('client.google.redirect')->middleware('web');
@@ -63,9 +52,5 @@ Route::prefix('')
         Route::get('contact', 'index')->name('contact');
         Route::post('receive-message', 'store')->name('receive-message');
     });
-
-//     Route::get('vnpay_return', function (Request $request){
-//     dd($request->all());
-// });
 
 Route::get('vnpay_return', [CartController::class, 'vnpayReturn'])->name('vnpay-return');
